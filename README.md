@@ -1,6 +1,31 @@
-# WifiPlug.Api
+<div align="center">
+
+[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg?style=flat-square)](https://raw.githubusercontent.com/wifiplug/api-client-net/master/README.md)
+[![GitHub issues](https://img.shields.io/github/issues/wifiplug/api-client-net.svg?style=flat-square)](https://github.com/wifiplug/api-client-net/issues)
+[![GitHub stars](https://img.shields.io/github/stars/wifiplug/api-client-net.svg?style=flat-square)](https://github.com/wifiplug/api-client-net/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/wifiplug/api-client-net.svg?style=flat-square)](https://github.com/wifiplug/api-client-net/network)
+
+</div>
+
+# WifiPlug API
 
 The .NET API client for the WIFIPLUG platform.
+
+## Get Started
+
+[![NuGet Status](https://img.shields.io/nuget/v/WifiPlug.Api.svg?style=flat)](https://www.nuget.org/packages/WifiPlug.Api/)
+
+You can install the package using either the CLI:
+
+```
+dotnet add package WifiPlug.Api
+```
+
+or from the NuGet package manager:
+
+```
+Install-Package WifiPlug.Api
+```
 
 ## Example
 
@@ -32,3 +57,7 @@ class Program
     }
 }
 ```
+
+## Contributing
+
+We welcome any pull requests or bug reports, please try and keep to the existing style conventions and comment any additions. The issues section is only for problems related to the API client, other issues will be closed.
