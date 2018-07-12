@@ -197,7 +197,55 @@ namespace WifiPlug.Api
                     List<ApiError> errList = new List<ApiError>(errJson.Count);
                     
                     foreach(JObject err in errJson) {
-                        errList.Add(new ApiError((string)err["error"], (string)err["message"]));
+                        // get additional data
+                        Dictionary<string, object> data = new Dictionary<string, object>();
+
+                        foreach(KeyValuePair<string, JToken> kv in err) {
+                            if (kv.Key.Equals("error", StringComparison.CurrentCultureIgnoreCase) || kv.Key.Equals("message", StringComparison.CurrentCultureIgnoreCase))
+                                continue;
+
+                            // convert type if required
+                            object o = kv.Value;
+
+                            switch(kv.Value.Type) {
+                                case JTokenType.Boolean:
+                                    o = (bool)kv.Value;
+                                    break;
+                                case JTokenType.Bytes:
+                                    o = (byte[])kv.Value;
+                                    break;
+                                case JTokenType.Date:
+                                    o = (DateTime)kv.Value;
+                                    break;
+                                case JTokenType.Float:
+                                    o = (float)kv.Value;
+                                    break;
+                                case JTokenType.Guid:
+                                    o = (Guid)kv.Value;
+                                    break;
+                                case JTokenType.Integer:
+                                    o = Convert.ToInt32(kv.Value);
+                                    break;
+                                case JTokenType.Null:
+                                    o = null;
+                                    break;
+                                case JTokenType.String:
+                                    o = (string)kv.Value;
+                                    break;
+                                case JTokenType.TimeSpan:
+                                    o = (TimeSpan)kv.Value;
+                                    break;
+                                case JTokenType.Uri:
+                                    o = (Uri)kv.Value;
+                                    break;
+                            }
+
+                            // set data
+                            data[kv.Key] = kv.Value;
+                        }
+
+                        // add error to list
+                        errList.Add(new ApiError((string)err["error"], (string)err["message"], data));
                     }
 
                     // assign

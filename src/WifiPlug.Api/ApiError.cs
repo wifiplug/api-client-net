@@ -19,6 +19,11 @@ namespace WifiPlug.Api
         /// Gets the error message.
         /// </summary>
         public string Message { get; private set; }
+
+        /// <summary>
+        /// Gets any additional data in the error.
+        /// </summary>
+        public IDictionary<string, object> Data { get; private set; }
         #endregion
 
         #region Constructors
@@ -27,9 +32,11 @@ namespace WifiPlug.Api
         /// </summary>
         /// <param name="code">The code.</param>
         /// <param name="message">The message.</param>
-        internal ApiError(string code, string message) {
+        /// <param name="data">The data.</param>
+        internal ApiError(string code, string message, IDictionary<string, object> data) {
             Code = code;
             Message = message;
+            Data = data ?? new Dictionary<string, object>();
         }
         #endregion
     }
