@@ -1,0 +1,90 @@
+﻿<Window x:Class="Example.EnergyGraphing.EnergyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:Example.EnergyGraphing"
+        mc:Ignorable="d"
+        Title="Energy" Height="750" Width="1024" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="2" Grid.RowSpan="2" Margin="0,0,0.286,-0.286">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="160"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <lc:CartesianChart Grid.Row="0" Margin="10,10,10,5" Name="chartHistorical">
+                <lc:CartesianChart.AxisX>
+                    <lc:Axis Title="Day" Name="axisHistoricalDay">
+                    </lc:Axis>
+                </lc:CartesianChart.AxisX>
+                <lc:CartesianChart.AxisY>
+                    <lc:Axis Title="Consumption" Name="axisHistoricalConsumption"></lc:Axis>
+                </lc:CartesianChart.AxisY>
+            </lc:CartesianChart>
+
+            <lc:CartesianChart Grid.Row="1" Margin="10,10,10,5" Name="chartLive" >
+                <lc:CartesianChart.AxisX>
+                    <lc:Axis Title="Time" Name="axisLiveTime"></lc:Axis>
+                </lc:CartesianChart.AxisX>
+                <lc:CartesianChart.AxisY>
+                    <lc:Axis Title="Power" Name="axisLivePower"></lc:Axis>
+                </lc:CartesianChart.AxisY>
+            </lc:CartesianChart>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <lc:AngularGauge FromValue="0" ToValue="280" Grid.Column="0" TicksStep="30" LabelsStep="30" Name="gaugeVoltage" SectionsInnerRadius=".5">
+                    <lc:AngularGauge.Sections>
+                        <lc:AngularSection FromValue="0" ToValue="250" Fill="#25FF25"/>
+                        <lc:AngularSection FromValue="250" ToValue="280" Fill="#FF3939"/>
+                    </lc:AngularGauge.Sections>
+                </lc:AngularGauge>
+                <lc:AngularGauge Grid.Column="1" FromValue="0" ToValue="15" TicksStep="1" LabelsStep="1" Name="gaugeCurrent" SectionsInnerRadius=".5">
+                    <lc:AngularGauge.Sections>
+                        <lc:AngularSection FromValue="0" ToValue="10" Fill="#25FF25"/>
+                        <lc:AngularSection FromValue="10" ToValue="13" Fill="#F8A725"/>
+                        <lc:AngularSection FromValue="13" ToValue="15" Fill="#FF3939"/>
+                    </lc:AngularGauge.Sections>
+                </lc:AngularGauge>
+                <lc:AngularGauge Grid.Column="2" FromValue="0" ToValue="2300" TicksStep="50" LabelsStep="200" Name="gaugePower" SectionsInnerRadius=".5">
+                    <lc:AngularGauge.Sections>
+                        <lc:AngularSection FromValue="0" ToValue="2000" Fill="#25FF25"/>
+                        <lc:AngularSection FromValue="2000" ToValue="2300" Fill="#F8A725"/>
+                        <lc:AngularSection FromValue="2300" ToValue="2500" Fill="#FF3939"/>
+                    </lc:AngularGauge.Sections>
+                </lc:AngularGauge>
+            </Grid>
+            
+            <StackPanel Grid.Row="3" Margin="10,5,10,10" Orientation="Horizontal">
+                <Label Name="lblSelected" FontSize="16" FontWeight="Bold">Selected: None</Label>
+                <Label Name="lblTotalConsumption" FontSize="16" FontWeight="Bold">Last 7 days: 0.0 KwH (£0.00)</Label>
+
+            </StackPanel>
+        </Grid>
+
+        <ListView Name="listDevices" Grid.RowSpan="1" Margin="10,10,0.387,4.714"  SelectionChanged="listDevices_SelectionChanged">
+
+        </ListView>
+
+        <Button Grid.Row="1" Margin="10,5.286,0.387,9.714" Name="btnRefresh" Click="btnRefresh_Click">Refresh</Button>
+    </Grid>
+</Window>
