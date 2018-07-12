@@ -73,6 +73,13 @@ namespace WifiPlug.Api.Authentication
 
         #region Constructors
         /// <summary>
+        /// Creates an empty session authentication object.
+        /// </summary>
+        public SessionAuthentication() {
+            _token = string.Empty;
+        }
+
+        /// <summary>
         /// Creates a new session authentication object from a token.
         /// </summary>
         /// <param name="token">The token.</param>

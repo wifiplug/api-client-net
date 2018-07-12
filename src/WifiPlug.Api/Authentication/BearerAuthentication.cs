@@ -75,6 +75,13 @@ namespace WifiPlug.Api.Authentication
 
         #region Constructors
         /// <summary>
+        /// Creates an empty bearer authentication object.
+        /// </summary>
+        public BearerAuthentication() {
+            _bearerToken = string.Empty;
+        }
+
+        /// <summary>
         /// Creates a new bearer authentication object from a bearer token.
         /// </summary>
         /// <param name="bearerToken">The bearer token.</param>

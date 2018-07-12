@@ -57,7 +57,9 @@ namespace WifiPlug.Api
         /// </summary>
         /// <param name="data">The data.</param>
         public void Deserialize(string data) {
-
+            using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(data))) {
+                Deserialize(ms);
+            }
         }
     }
 }
