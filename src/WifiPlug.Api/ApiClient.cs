@@ -100,26 +100,34 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the device operations.
         /// </summary>
-        public DeviceOperations Devices { get; private set; }
+        public virtual IDeviceOperations Devices { get; protected set; }
 
         /// <summary>
         /// Gets the session operations.
         /// </summary>
-        public SessionOperations Sessions { get; private set; }
+        public virtual ISessionOperations Sessions { get; protected set; }
 
         /// <summary>
         /// Gets the user operations.
         /// </summary>
-        public UserOperations Users { get; private set; }
+        public virtual IUserOperations Users { get; protected set; }
 
         /// <summary>
         /// Gets the group operations.
         /// </summary>
-        public GroupOperations Groups { get; private set; }
+        public virtual IGroupOperations Groups { get; protected set; }
         #endregion
 
         #region Rest Methods
-        internal async Task<HttpResponseMessage> RequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Sends a REST request.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="content">The request content, or null.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response message.</returns>
+        protected internal async Task<HttpResponseMessage> RequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken = default(CancellationToken)) {
             bool hasReauthorised = false;
 
             for (int i = 0; i < _retryCount; i++) {
@@ -150,7 +158,7 @@ namespace WifiPlug.Api
             throw new NotImplementedException("Unreachable");
         }
 
-        internal async Task<HttpResponseMessage> RawRequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken = default(CancellationToken)) {
+        private async Task<HttpResponseMessage> RawRequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken = default(CancellationToken)) {
             // throw if cancelled
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -181,8 +189,10 @@ namespace WifiPlug.Api
                 ApiError[] errArr;
 
                 try {
+                    // parse the response error object
                     JObject obj = JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 
+                    // convert to list of ApiError objects
                     JArray errJson = (JArray)obj["errors"];
                     List<ApiError> errList = new List<ApiError>(errJson.Count);
                     
@@ -190,6 +200,7 @@ namespace WifiPlug.Api
                         errList.Add(new ApiError((string)err["error"], (string)err["message"]));
                     }
 
+                    // assign
                     errArr = errList.ToArray();
                     errMessage = (errArr.Length > 1 ? $"{errList.Count} errors occured" : errArr[0].Message) ?? "Unspecified error";
                 } catch(Exception) {
@@ -201,14 +212,31 @@ namespace WifiPlug.Api
             }
         }
 
-        internal async Task<string> RequestStringAsync(HttpMethod method, string path, HttpContent body = null, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a string response.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="content">The request content, or null.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response string.</returns>
+        protected internal async Task<string> RequestStringAsync(HttpMethod method, string path, HttpContent content = null, CancellationToken cancellationToken = default(CancellationToken)) {
             return await (
-                await RequestAsync(method, path, body, cancellationToken).ConfigureAwait(false))
+                await RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false))
                 .Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        internal async Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, HttpContent body = null, CancellationToken cancellationToken = default(CancellationToken))  {
-            HttpResponseMessage response = await RequestAsync(method, path, body, cancellationToken).ConfigureAwait(false);
+        /// <summary>
+        /// Requests a JSON object response.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="content">The request content, or null.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response message.</returns>
+        /// <returns>The JSON object response.</returns>
+        protected internal async Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, HttpContent content = null, CancellationToken cancellationToken = default(CancellationToken))  {
+            HttpResponseMessage response = await RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
                 throw new ApiException("Invalid server response", new ApiError[0], response);
@@ -216,23 +244,53 @@ namespace WifiPlug.Api
             return JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        internal Task RequestJsonAsync(HttpMethod method, string path, HttpContent body = null, CancellationToken cancellationToken = default(CancellationToken)) {
-            return RequestAsync(method, path, body, cancellationToken);
-        }
-
-        internal Task RequestJsonAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a JSON object with no response.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The JSON body.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        protected internal Task RequestJsonAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken = default(CancellationToken)) {
             return RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken);
         }
 
-        internal Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a JSON object with a JSON object response.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The JSON body.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The JSON object response.</returns>
+        protected internal Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken = default(CancellationToken)) {
             return RequestJsonObjectAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"));
         }
 
-        internal Task RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a serialized object with no response.
+        /// </summary>
+        /// <typeparam name="TReq">The request object type.</typeparam>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The object to be serialized.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        protected internal Task RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken = default(CancellationToken)) {
             return RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken);
         }
 
-        internal async Task<JObject> RequestJsonSerializedObjectAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a serialized object with a JSON object response.
+        /// </summary>
+        /// <typeparam name="TReq">The request object type.</typeparam>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The object to be serialized.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The JSON object response.</returns>
+        protected internal async Task<JObject> RequestJsonSerializedObjectAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken = default(CancellationToken)) {
             HttpResponseMessage response = await RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
@@ -241,7 +299,16 @@ namespace WifiPlug.Api
             return JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        internal async Task<TRes> RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, JObject body, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a JSON object with a serialized object response.
+        /// </summary>
+        /// <typeparam name="TRes">The response object type.</typeparam>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The JSON body.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response object.</returns>
+        protected internal async Task<TRes> RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, JObject body, CancellationToken cancellationToken = default(CancellationToken)) {
             HttpResponseMessage response = await RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
@@ -250,7 +317,17 @@ namespace WifiPlug.Api
             return JsonConvert.DeserializeObject<TRes>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        internal async Task<TRes> RequestJsonSerializedAsync<TReq, TRes>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a serialized object with a serialized object response.
+        /// </summary>
+        /// <typeparam name="TReq">The request object type.</typeparam>
+        /// <typeparam name="TRes">The response object type.</typeparam>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The JSON body.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response object.</returns>
+        protected internal async Task<TRes> RequestJsonSerializedAsync<TReq, TRes>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken = default(CancellationToken)) {
             string s = JsonConvert.SerializeObject(body);
             HttpResponseMessage response = await RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
            
@@ -260,7 +337,15 @@ namespace WifiPlug.Api
             return JsonConvert.DeserializeObject<TRes>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        internal async Task<TRes> RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, CancellationToken cancellationToken = default(CancellationToken)) {
+        /// <summary>
+        /// Requests a serialized object response.
+        /// </summary>
+        /// <typeparam name="TRes">The response object type.</typeparam>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response object.</returns>
+        protected internal async Task<TRes> RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, CancellationToken cancellationToken = default(CancellationToken)) {
             HttpResponseMessage response = await RequestAsync(method, path, new StringContent("", Encoding.UTF8), cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
@@ -285,25 +370,52 @@ namespace WifiPlug.Api
         /// <summary>
         /// Creates a new WIFIPLUG client without a API key or secret.
         /// </summary>
-        public ApiClient() {
-            // setup client
-            _client = new HttpClient();
-            _client.BaseAddress = new Uri(API_URL);
-            _client.DefaultRequestHeaders.Add("X-API-Client", "api-client-net/1.0");
-            
-            // initialize operations
-            Devices = new DeviceOperations(this);
-            Users = new UserOperations(this);
-            Sessions = new SessionOperations(this);
-            Groups = new GroupOperations(this);
-        }
+        public ApiClient() : this(null) { }
 
         /// <summary>
         /// Create a new WIFIPLUG client.
         /// </summary>
         /// <param name="apiKey">The API key.</param>
         /// <param name="apiSecret">The API secret.</param>
-        public ApiClient(string apiKey, string apiSecret) :this() {
+        public ApiClient(string apiKey, string apiSecret) : this(API_URL) {
+            if (apiKey == null)
+                throw new ArgumentNullException(nameof(apiKey));
+            else if (apiSecret == null)
+                throw new ArgumentNullException(nameof(apiSecret));
+
+            // set credentials for API
+            _apiKey = apiKey;
+            _apiSecret = apiSecret;
+
+            // add key/secret headers
+            _client.DefaultRequestHeaders.Add("X-API-Key", _apiKey);
+            _client.DefaultRequestHeaders.Add("X-API-Secret", _apiSecret);
+        }
+
+        /// <summary>
+        /// Creates a new WIFIPLUG client without a API key or secret.
+        /// </summary>
+        /// <param name="apiUrl">>The custom base path of the API.</param>
+        public ApiClient(string apiUrl) {
+            // setup client
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri(apiUrl == null ? API_URL : apiUrl);
+            _client.DefaultRequestHeaders.Add("X-API-Client", "api-client-net/1.0");
+
+            // initialize operations
+            Devices = new DeviceOperations(this);
+            Users = new UserOperations(this);
+            Sessions = new SessionOperations(this);
+            Groups = new GroupOperations(this);
+        }
+        
+        /// <summary>
+        /// Create a new WIFIPLUG client.
+        /// </summary>
+        /// <param name="apiUrl">The custom base path of the API.</param>
+        /// <param name="apiKey">The API key.</param>
+        /// <param name="apiSecret">The API secret.</param>
+        public ApiClient(string apiUrl, string apiKey, string apiSecret) : this(apiUrl) {
             if (apiKey == null)
                 throw new ArgumentNullException(nameof(apiKey));
             else if (apiSecret == null)

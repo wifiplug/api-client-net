@@ -13,9 +13,12 @@ namespace WifiPlug.Api.Operations
     /// <summary>
     /// Provides operations for session resources.
     /// </summary>
-    public class SessionOperations
+    public class SessionOperations : ISessionOperations
     {
-        private ApiClient _client;
+        /// <summary>
+        /// The API client.
+        /// </summary>
+        protected ApiClient _client;
 
         /// <summary>
         /// Gets the current session information.
@@ -51,6 +54,7 @@ namespace WifiPlug.Api.Operations
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
         public Task<SessionEntity> LoginAsync(string username, string password, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync<SessionLoginEntity, SessionEntity>(HttpMethod.Post, "session/login", new SessionLoginEntity() {

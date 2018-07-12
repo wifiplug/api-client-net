@@ -12,9 +12,12 @@ namespace WifiPlug.Api.Operations
     /// <summary>
     /// Provides operations for group resources.
     /// </summary>
-    public class GroupOperations
+    public class GroupOperations : IGroupOperations
     {
-        private ApiClient _client;
+        /// <summary>
+        /// The API client.
+        /// </summary>
+        protected ApiClient _client;
 
         /// <summary>
         /// Scans the group list.

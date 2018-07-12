@@ -16,9 +16,12 @@ namespace WifiPlug.Api.Operations
     /// <summary>
     /// Provides operations for device resources.
     /// </summary>
-    public class DeviceOperations
+    public class DeviceOperations : IDeviceOperations
     {
-        private ApiClient _client;
+        /// <summary>
+        /// The API client.
+        /// </summary>
+        protected ApiClient _client;
 
         /// <summary>
         /// Gets a live energy reading from the device service, if applicable.

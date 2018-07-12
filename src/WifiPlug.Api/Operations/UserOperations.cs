@@ -12,10 +12,12 @@ namespace WifiPlug.Api.Operations
     /// <summary>
     /// Provides operations for user resources.
     /// </summary>
-    /// <remarks>These operations are primarily internal, and are not guarenteed to remain stable between versions.</remarks>
-    public class UserOperations
+    public class UserOperations : IUserOperations
     {
-        private ApiClient _client;
+        /// <summary>
+        /// The API client.
+        /// </summary>
+        protected ApiClient _client;
 
         /// <summary>
         /// Edits the currently authenticated user.
@@ -41,7 +43,7 @@ namespace WifiPlug.Api.Operations
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns>The user entity.</returns>
         public Task ChangePasswordAsync(ChangePasswordEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync(HttpMethod.Post, "user/password", entity, cancellationToken);
@@ -53,7 +55,7 @@ namespace WifiPlug.Api.Operations
         /// <param name="currentPassword">The current password.</param>
         /// <param name="newPassword">The new password.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns>The user entity.</returns>
         public Task ChangePasswordAsync(string currentPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken)) {
             return ChangePasswordAsync(new ChangePasswordEntity() {
@@ -67,7 +69,7 @@ namespace WifiPlug.Api.Operations
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
         public Task<VerificationEntity> ForgotPasswordAsync(ForgotPasswordEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync<ForgotPasswordEntity, VerificationEntity>(HttpMethod.Post, "user/forgot_password", entity, cancellationToken);
@@ -78,7 +80,7 @@ namespace WifiPlug.Api.Operations
         /// </summary>
         /// <param name="email">The email address.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
         public Task<VerificationEntity> ForgotPasswordAsync(string email, CancellationToken cancellationToken = default(CancellationToken)) {
             return ForgotPasswordAsync(new ForgotPasswordEntity() {
@@ -91,7 +93,7 @@ namespace WifiPlug.Api.Operations
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
         public Task ResetPasswordAsync(ResetPasswordEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync(HttpMethod.Post, "user/reset_password", entity, cancellationToken);
@@ -102,7 +104,7 @@ namespace WifiPlug.Api.Operations
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
         public Task<VerificationEntity> RegisterUserAsync(RegisterUserEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync<RegisterUserEntity, VerificationEntity>(HttpMethod.Post, "user/register", entity, cancellationToken);
@@ -113,7 +115,7 @@ namespace WifiPlug.Api.Operations
         /// </summary>
         /// <param name="email"></param>
         /// <param name="cancellationToken"></param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
         public Task<VerificationEntity> RegisterUserAsync(string email, CancellationToken cancellationToken = default(CancellationToken)) {
             return RegisterUserAsync(new RegisterUserEntity() {
@@ -126,7 +128,7 @@ namespace WifiPlug.Api.Operations
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="cancellationToken"></param>
-        /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
         public Task<UserEntity> ActivateUserAsync(ActivateUserEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync<ActivateUserEntity, UserEntity>(HttpMethod.Post, "user/activate", entity, cancellationToken);
