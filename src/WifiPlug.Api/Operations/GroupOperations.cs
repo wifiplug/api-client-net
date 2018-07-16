@@ -245,8 +245,7 @@ namespace WifiPlug.Api.Operations
 
             return timers.ToArray();
         }
-
-
+        
         /// <summary>
         /// Adds a timer to the group.
         /// </summary>
@@ -278,6 +277,48 @@ namespace WifiPlug.Api.Operations
         /// <returns></returns>
         public Task<TimerEntity> GetGroupTimerAsync(Guid groupUuid, Guid timerUuid, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync<TimerEntity>(HttpMethod.Get, $"group/{groupUuid}/timer/{timerUuid}", cancellationToken);
+        }
+
+        /// <summary>
+        /// Scans the group item list.
+        /// </summary>
+        /// <param name="groupUuid">The group UUID.</param>
+        /// <param name="limit">The limit, maximum of 50.</param>
+        /// <param name="cursor">The previously returned cursor.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<ScanResult<GroupItemEntity>> ScanGroupItemsAsync(Guid groupUuid, int limit = 50, Cursor cursor = default(Cursor), CancellationToken cancellationToken = default(CancellationToken)) {
+            if (limit < 0 || limit > 50)
+                throw new ArgumentOutOfRangeException(nameof(limit), "The limit cannot be larger than 50");
+
+            // build uri
+            string uri = $"group/{groupUuid}/item?limit={limit}";
+
+            if (!cursor.IsEnd)
+                uri += string.Format("&cursor={0}", WebUtility.UrlEncode(cursor.Token));
+
+            // load results for current cursor
+            GroupItemResultsEntity entity = await _client.RequestJsonSerializedAsync<GroupItemResultsEntity>(HttpMethod.Get, uri, cancellationToken).ConfigureAwait(false);
+
+            return new ScanResult<GroupItemEntity>(entity.Items, entity.TotalItems, entity.Cursor);
+        }
+
+        /// <summary>
+        /// Gets all group items.
+        /// </summary>
+        /// <param name="groupUuid">The group UUID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<GroupItemEntity[]> ListGroupItemsAsync(Guid groupUuid, CancellationToken cancellationToken = default(CancellationToken)) {
+            ScanResult<GroupItemEntity> scan = null;
+            List<GroupItemEntity> items = new List<GroupItemEntity>();
+
+            while (scan == null || !scan.Cursor.IsEnd) {
+                scan = await ScanGroupItemsAsync(groupUuid, 1, scan == null ? default(Cursor) : scan.Cursor, cancellationToken).ConfigureAwait(false);
+                items.AddRange(scan.Entities);
+            }
+
+            return items.ToArray();
         }
 
         internal GroupOperations(ApiClient client) {

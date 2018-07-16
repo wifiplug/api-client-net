@@ -185,5 +185,23 @@ namespace WifiPlug.Api.Operations
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<TimerEntity> GetGroupTimerAsync(Guid groupUuid, Guid timerUuid, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Scans the group item list.
+        /// </summary>
+        /// <param name="groupUuid">The group UUID.</param>
+        /// <param name="limit">The limit, maximum of 50.</param>
+        /// <param name="cursor">The previously returned cursor.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ScanResult<GroupItemEntity>> ScanGroupItemsAsync(Guid groupUuid, int limit = 50, Cursor cursor = default(Cursor), CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets all group items.
+        /// </summary>
+        /// <param name="groupUuid">The group UUID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<GroupItemEntity[]> ListGroupItemsAsync(Guid groupUuid, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
