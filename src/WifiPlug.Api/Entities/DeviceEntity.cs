@@ -41,6 +41,12 @@ namespace WifiPlug.Api.Entities
         public string Type { get; set; }
 
         /// <summary>
+        /// Gets or sets the variant, always 8-digit hexidecimal.
+        /// </summary>
+        [JsonProperty(PropertyName = "variant", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string Variant { get; set; }
+
+        /// <summary>
         /// Gets or sets the number of users attached to the device.
         /// </summary>
         [JsonProperty(PropertyName = "user_count", DefaultValueHandling = DefaultValueHandling.Ignore)]

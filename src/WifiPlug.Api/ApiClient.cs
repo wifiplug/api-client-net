@@ -116,6 +116,11 @@ namespace WifiPlug.Api
         /// Gets the group operations.
         /// </summary>
         public virtual IGroupOperations Groups { get; protected set; }
+
+        /// <summary>
+        /// Gets the event operations.
+        /// </summary>
+        public virtual IEventOperations Events { get; protected set; }
         #endregion
 
         #region Rest Methods
@@ -455,6 +460,7 @@ namespace WifiPlug.Api
             Users = new UserOperations(this);
             Sessions = new SessionOperations(this);
             Groups = new GroupOperations(this);
+            Events = new EventOperations(this);
         }
         
         /// <summary>

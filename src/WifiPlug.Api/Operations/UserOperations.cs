@@ -134,6 +134,17 @@ namespace WifiPlug.Api.Operations
             return _client.RequestJsonSerializedAsync<ActivateUserEntity, UserEntity>(HttpMethod.Post, "user/activate", entity, cancellationToken);
         }
 
+        /// <summary>
+        /// Adds a user notification token to the current user.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
+        /// <returns></returns>
+        public Task AddUserNotificationAsync(UserNotificationAddEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
+            return _client.RequestJsonSerializedAsync(HttpMethod.Post, "user/notification/add", entity, cancellationToken);
+        }
+
         internal UserOperations(ApiClient client) {
             _client = client;
         }

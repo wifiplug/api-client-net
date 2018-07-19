@@ -155,7 +155,7 @@ namespace WifiPlug.Api.Operations
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<ScanResult<DeviceUserEntity>> ScanDeviceUsersAsync(Guid deviceUuid, int limit = 50, Cursor cursor = default(Cursor), CancellationToken cancellationToken = default(CancellationToken));
-        
+
         /// <summary>
         /// Adds a user to a device.
         /// </summary>
@@ -274,5 +274,23 @@ namespace WifiPlug.Api.Operations
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task DeleteDeviceTimerAsync(Guid deviceUuid, Guid timerUuid, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Scans the device events list.
+        /// </summary>
+        /// <param name="deviceUuid">The device UUID.</param>
+        /// <param name="limit">The limit, maximum of 50.</param>
+        /// <param name="cursor">The previously returned cursor.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The event results.</returns>
+        Task<ScanResult<EventEntity>> ScanDeviceEventsAsync(Guid deviceUuid, int limit = 50, Cursor cursor = default(Cursor), CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets all device events. This may return alot of results, see <see cref="ScanDeviceEventsAsync"/> instead.
+        /// </summary>
+        /// <param name="deviceUuid">The device UUID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>All events.</returns>
+        Task<EventEntity[]> ListDeviceEventsAsync(Guid deviceUuid, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

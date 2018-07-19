@@ -99,5 +99,14 @@ namespace WifiPlug.Api.Operations
         /// <remarks>This is an internal API and is not guarenteed to be stable between versions.</remarks>
         /// <returns></returns>
         Task<UserEntity> ActivateUserAsync(ActivateUserEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Adds a user notification token to the current user.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
+        /// <returns></returns>
+        Task AddUserNotificationAsync(UserNotificationAddEntity entity, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
