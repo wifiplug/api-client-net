@@ -27,12 +27,7 @@ namespace Example.EnergyGraphing
     {
         public LoginWindow() {
             InitializeComponent();
-
-            txtApiKey.Text = "gskfWpAKeK8t1sBUZ5A4AoLDZfilewis";
-            txtApiSecret.Text = "C40coaxsD5HvPdkeJ5b639SU7xJ2JJPV";
-            txtRefreshToken.Text = "05e4435bc37c4eb6ad57b7aa4b7ff780";
-            txtAccessToken.Text = "5db6c6a5dfc14b5db76f989f312dd63a";
-
+            
             var mapper = Mappers.Xy<HistoricalEnergyReadingEntity>()
                 .X(model => model.Timestamp.Ticks)
                 .Y(model => Math.Round(model.Power, 4));
@@ -87,6 +82,7 @@ namespace Example.EnergyGraphing
             // show energy window
             Hide();
             window.ShowDialog();
+            btnLogin.IsEnabled = true;
             Show();
         }
     }
