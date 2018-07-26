@@ -175,9 +175,7 @@ namespace WifiPlug.Api
                 _authentication.Apply(req);
 
             // assign body
-            if (content == null)
-                req.Content = new StringContent("", Encoding.UTF8);
-            else if (method != HttpMethod.Get)
+            if (method != HttpMethod.Get)
                 req.Content = content;
 
             // send

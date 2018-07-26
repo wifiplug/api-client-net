@@ -17,8 +17,7 @@ namespace Example.Cli
             ApiClient cc = new ApiClient(Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
             cc.Authentication = new SessionAuthentication(Environment.GetEnvironmentVariable("SESSION_TOKEN"));
 
-            var q = await cc.Devices.ListDevicesAsync();
-            var qq = await cc.Devices.ListDeviceEventsAsync(q[2].UUID);
+            var p = await cc.PingAsync();
         }
     }
 }
