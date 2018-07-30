@@ -10,7 +10,7 @@ namespace WifiPlug.Api.Converters
     /// <summary>
     /// Provides functionality to convert between a repetition enum and JSON.
     /// </summary>
-    internal class TimerItemEntityConverter : JsonConverter
+    internal sealed class TimerItemEntityConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType) {
             return objectType == typeof(TimerItemEntity) || objectType == typeof(TimerItemEntity[]);

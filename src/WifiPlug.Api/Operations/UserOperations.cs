@@ -145,7 +145,11 @@ namespace WifiPlug.Api.Operations
             return _client.RequestJsonSerializedAsync(HttpMethod.Post, "user/notification/add", entity, cancellationToken);
         }
 
-        internal UserOperations(ApiClient client) {
+        /// <summary>
+        /// Creates a user operations object.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        protected internal UserOperations(ApiClient client) {
             _client = client;
         }
     }

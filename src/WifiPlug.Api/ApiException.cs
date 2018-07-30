@@ -7,7 +7,7 @@ namespace WifiPlug.Api
     /// <summary>
     /// Represents a failure response from the API.
     /// </summary>
-    public class ApiException : Exception
+    public sealed class ApiException : Exception
     {
         private ApiError[] _errors;
         private HttpResponseMessage _response;

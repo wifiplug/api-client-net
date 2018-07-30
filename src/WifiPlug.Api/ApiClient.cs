@@ -17,7 +17,7 @@ namespace WifiPlug.Api
     /// <summary>
     /// Provides access to the WIFIPLUG API services and systems.
     /// </summary>
-    public class ApiClient
+    public class ApiClient : IApiClient
     {
         #region Constants
         internal const string API_URL = "https://api.wifiplug.co.uk/v1.0/";
@@ -411,7 +411,7 @@ namespace WifiPlug.Api
         /// Pings the API to check if it's up.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        /// <returns>The ping response.</returns>
         public async Task<string> PingAsync(CancellationToken cancellationToken = default(CancellationToken)) {
             return await (await RequestAsync(HttpMethod.Get, "ping", null, cancellationToken)).Content.ReadAsStringAsync();
         }

@@ -321,7 +321,11 @@ namespace WifiPlug.Api.Operations
             return items.ToArray();
         }
 
-        internal GroupOperations(ApiClient client) {
+        /// <summary>
+        /// Creates a group operations object.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        protected internal GroupOperations(ApiClient client) {
             _client = client;
         }
     }

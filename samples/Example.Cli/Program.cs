@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WifiPlug.Api;
 using WifiPlug.Api.Authentication;
 using WifiPlug.Api.Entities;
+using WifiPlug.Api.Operations;
 using WifiPlug.Api.Schema;
 
 namespace Example.Cli
@@ -17,7 +18,7 @@ namespace Example.Cli
             ApiClient cc = new ApiClient(Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
             cc.Authentication = new SessionAuthentication(Environment.GetEnvironmentVariable("SESSION_TOKEN"));
 
-            var p = await cc.PingAsync();
+            DeviceSetupTokenEntity entity = await cc.Devices.AddDeviceSetupTokenAsync();
         }
     }
 }

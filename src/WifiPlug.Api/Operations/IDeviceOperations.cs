@@ -292,5 +292,13 @@ namespace WifiPlug.Api.Operations
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>All events.</returns>
         Task<EventEntity[]> ListDeviceEventsAsync(Guid deviceUuid, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Creates a device setup token.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
+        /// <returns>The setup token.</returns>
+        Task<DeviceSetupTokenEntity> AddDeviceSetupTokenAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

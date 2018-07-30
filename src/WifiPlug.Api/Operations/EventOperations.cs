@@ -28,7 +28,11 @@ namespace WifiPlug.Api.Operations
             return _client.RequestJsonSerializedAsync<EventEntity>(HttpMethod.Get, $"event/{eventUuid}", cancellationToken);
         }
 
-        internal EventOperations(ApiClient client) {
+        /// <summary>
+        /// Creates a event operations object.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        protected internal EventOperations(ApiClient client) {
             _client = client;
         }
     }

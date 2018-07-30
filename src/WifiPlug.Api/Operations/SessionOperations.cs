@@ -63,7 +63,11 @@ namespace WifiPlug.Api.Operations
             }, cancellationToken);
         }
 
-        internal SessionOperations(ApiClient client) {
+        /// <summary>
+        /// Creates a session operations object.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        protected internal SessionOperations(ApiClient client) {
             _client = client;
         }
     }

@@ -7,7 +7,7 @@ namespace WifiPlug.Api
     /// <summary>
     /// Represents a single API error.
     /// </summary>
-    public class ApiError
+    public sealed class ApiError
     {
         #region Properties
         /// <summary>

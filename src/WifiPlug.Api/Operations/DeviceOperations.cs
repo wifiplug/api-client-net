@@ -474,7 +474,21 @@ namespace WifiPlug.Api.Operations
             return events.ToArray();
         }
 
-        internal DeviceOperations(ApiClient client) {
+        /// <summary>
+        /// Creates a device setup token.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
+        /// <returns>The setup token.</returns>
+        public Task<DeviceSetupTokenEntity> AddDeviceSetupTokenAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+            return _client.RequestJsonSerializedAsync<DeviceSetupTokenEntity>(HttpMethod.Post, $"device/setup_token/add", cancellationToken);
+        }
+
+        /// <summary>
+        /// Creates a device operations object.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        protected internal DeviceOperations(ApiClient client) {
             _client = client;
         }
     }

@@ -8,7 +8,7 @@ namespace WifiPlug.Api
     /// Represents the result of a scan operation.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
-    public class ScanResult<TEntity>
+    public sealed class ScanResult<TEntity>
     {
         #region Fields
         private int _total;
