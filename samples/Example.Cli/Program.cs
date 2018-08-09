@@ -17,8 +17,6 @@ namespace Example.Cli
         static async Task AsyncMain(string[] args) {
             ApiClient cc = new ApiClient(Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
             cc.Authentication = new SessionAuthentication(Environment.GetEnvironmentVariable("SESSION_TOKEN"));
-
-            DeviceSetupTokenEntity entity = await cc.Devices.AddDeviceSetupTokenAsync();
         }
     }
 }

@@ -33,5 +33,23 @@ namespace WifiPlug.Api.Entities
         /// </summary>
         [JsonProperty(PropertyName = "password")]
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the given name.
+        /// </summary>
+        [JsonProperty(PropertyName = "given_name", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string GivenName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the family name.
+        /// </summary>
+        [JsonProperty(PropertyName = "family_name", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string FamilyName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the phone number.
+        /// </summary>
+        [JsonProperty(PropertyName = "phone", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string PhoneNumber { get; set; }
     }
 }

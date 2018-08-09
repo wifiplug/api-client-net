@@ -133,16 +133,38 @@ namespace WifiPlug.Api.Operations
         public Task<UserEntity> ActivateUserAsync(ActivateUserEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
             return _client.RequestJsonSerializedAsync<ActivateUserEntity, UserEntity>(HttpMethod.Post, "user/activate", entity, cancellationToken);
         }
+        
+        /// <summary>
+        /// Adds an endpoint entity.
+        /// </summary>
+        /// <param name="entity">The endpoint add entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
+        /// <returns>The endpoint entity.</returns>
+        public Task<EndpointEntity> AddEndpointAsync(EndpointAddEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
+            return _client.RequestJsonSerializedAsync<EndpointAddEntity, EndpointEntity>(HttpMethod.Post, "user/endpoint/add", entity, cancellationToken);
+        }
 
         /// <summary>
-        /// Adds a user notification token to the current user.
+        /// Gets an endpoint entity.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="endpointUuid">The endpoint UUID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The endpoint entity.</returns>
+        public Task<EndpointEntity> GetEndpointAsync(Guid endpointUuid, CancellationToken cancellationToken = default(CancellationToken)) {
+            return _client.RequestJsonSerializedAsync<EndpointEntity>(HttpMethod.Get, $"user/endpoint/{endpointUuid}", cancellationToken);
+        }
+
+        /// <summary>
+        /// Edits an endpoints notification token.
+        /// </summary>
+        /// <param name="endpointUuid">The endpoint UUID.</param>
+        /// <param name="entity">The endpoint add notification entity.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
-        public Task AddUserNotificationAsync(UserNotificationAddEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
-            return _client.RequestJsonSerializedAsync(HttpMethod.Post, "user/notification/add", entity, cancellationToken);
+        public Task EditEndpointNotificationAsync(Guid endpointUuid, EndpointEditNotificationEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
+            return _client.RequestJsonSerializedAsync(HttpMethod.Post, $"user/endpoint/{endpointUuid}/push_notification", entity, cancellationToken);
         }
 
         /// <summary>

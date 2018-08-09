@@ -101,12 +101,28 @@ namespace WifiPlug.Api.Operations
         Task<UserEntity> ActivateUserAsync(ActivateUserEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Adds a user notification token to the current user.
+        /// Adds an endpoint entity.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="entity">The endpoint add entity.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
         /// <returns></returns>
-        Task AddUserNotificationAsync(UserNotificationAddEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+        Task<EndpointEntity> AddEndpointAsync(EndpointAddEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets an endpoint entity.
+        /// </summary>
+        /// <param name="endpointUuid">The endpoint UUID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<EndpointEntity> GetEndpointAsync(Guid endpointUuid, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Edits an endpoints notification token.
+        /// </summary>
+        /// <param name="endpointUuid">The endpoint UUID.</param>
+        /// <param name="entity">The endpoint add notification entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task EditEndpointNotificationAsync(Guid endpointUuid, EndpointEditNotificationEntity entity, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
