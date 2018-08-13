@@ -13,7 +13,7 @@ namespace WifiPlug.Api.Entities
         /// <summary>
         /// Gets or sets the application UUID.
         /// </summary>
-        [JsonProperty("application")]
+        [JsonProperty("application_uuid")]
         public Guid ApplicationUUID { get; set; }
 
         /// <summary>

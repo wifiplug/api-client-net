@@ -21,5 +21,11 @@ namespace WifiPlug.Api.Entities
         /// </summary>
         [JsonProperty(PropertyName = "family_name")]
         public string FamilyName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the phone number.
+        /// </summary>
+        [JsonProperty(PropertyName = "phone")]
+        public string PhoneNumber { get; set; }
     }
 }
