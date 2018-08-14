@@ -17,7 +17,6 @@ namespace WifiPlug.Api.Entities
         /// Gets or sets the next time the timer will run.
         /// </summary>
         [JsonProperty(PropertyName = "datetime")]
-        [JsonConverter(typeof(InaccurateIsoDateTimeConverter))]
         public DateTime DateTime { get; set; }
 
         /// <summary>

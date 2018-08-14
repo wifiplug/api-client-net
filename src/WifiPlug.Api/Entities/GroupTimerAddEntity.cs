@@ -16,14 +16,12 @@ namespace WifiPlug.Api.Entities
         /// Gets or sets the next time the timer will run.
         /// </summary>
         [JsonProperty(PropertyName = "datetime")]
-        [JsonConverter(typeof(InaccurateIsoDateTimeConverter))]
         public DateTime DateTime { get; set; }
 
         /// <summary>
         /// Gets or sets the days the timer will repeat on, if any.
         /// </summary>
         [JsonProperty(PropertyName = "repeats", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        [JsonConverter(typeof(TimerRepetitionConverter))]
         public TimerRepetition Repeats { get; set; }
 
         /// <summary>
