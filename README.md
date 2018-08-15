@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/wifiplug/api-client-net.svg?style=flat-square)](https://github.com/wifiplug/api-client-net/issues)
 [![GitHub stars](https://img.shields.io/github/stars/wifiplug/api-client-net.svg?style=flat-square)](https://github.com/wifiplug/api-client-net/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/wifiplug/api-client-net.svg?style=flat-square)](https://github.com/wifiplug/api-client-net/network)
+[![GitHub forks](https://img.shields.io/nuget/dt/WifiPlug.Api.svg?style=flat-square)](https://www.nuget.org/packages/WifiPlug.Api/)
 
 </div>
 
@@ -13,7 +14,7 @@ The .NET API client for the WIFIPLUG platform.
 
 ## Get Started
 
-[![NuGet Status](https://img.shields.io/nuget/v/WifiPlug.Api.svg?style=flat)](https://www.nuget.org/packages/WifiPlug.Api/)
+[![NuGet Status](https://img.shields.io/nuget/v/WifiPlug.Api.svg?style=flat-square)](https://www.nuget.org/packages/WifiPlug.Api/)
 
 You can install the package using either the CLI:
 
