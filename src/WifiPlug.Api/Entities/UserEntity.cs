@@ -33,5 +33,11 @@ namespace WifiPlug.Api.Entities
         /// </summary>
         [JsonProperty(PropertyName = "email_address")]
         public string EmailAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the phone number.
+        /// </summary>
+        [JsonProperty(PropertyName = "phone")]
+        public string PhoneNumber { get; set; }
     }
 }
