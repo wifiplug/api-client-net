@@ -121,6 +121,7 @@ namespace WifiPlug.Api.Operations
         /// <param name="groupUuid">The group UUID.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The new state.</returns>
+        [Obsolete("Group toggling, use ControlGroupAsync", true)]
         Task<ControlEntity> ToggleGroupAsync(Guid groupUuid, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
