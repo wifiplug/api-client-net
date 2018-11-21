@@ -137,14 +137,14 @@ namespace WifiPlug.Api
 
             for (int i = 0; i < _retryCount; i++) {
                 try {
-                    return await RawRequestAsync(method, path, content, cancellationToken);
+                    return await RawRequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
                 } catch(ApiException ex) {
                     if (ex.StatusCode == HttpStatusCode.BadGateway && i < _retryCount - 1) {
-                        await Task.Delay(_retryDelay, cancellationToken);
+                        await Task.Delay(_retryDelay, cancellationToken).ConfigureAwait(false);
                         continue;
                     } else if (ex.StatusCode == HttpStatusCode.Unauthorized && _authentication != null && !hasReauthorised) {
                         // try and reauthorize
-                        bool success = await _authentication.ReauthorizeAsync(this);
+                        bool success = await _authentication.ReauthorizeAsync(this).ConfigureAwait(false);
 
                         // if we're successful we don't count this as a retry, note that we store this
                         // this prevents an infinite loop and gives us retryCount + 1 if we had to reauthorise
@@ -413,7 +413,7 @@ namespace WifiPlug.Api
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The ping response.</returns>
         public async Task<string> PingAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-            return await (await RequestAsync(HttpMethod.Get, "ping", null, cancellationToken)).Content.ReadAsStringAsync();
+            return await (await RequestAsync(HttpMethod.Get, "ping", null, cancellationToken).ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
         }
         #endregion
 
