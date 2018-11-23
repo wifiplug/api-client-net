@@ -20,7 +20,7 @@ namespace WifiPlug.Api
     public class ApiClient : IApiClient
     {
         #region Constants
-        internal const string API_URL = "https://api.wifiplug.co.uk/v1.0/";
+        internal const string ApiUrl = "https://api.wifiplug.co.uk/v1.0/";
         #endregion
 
         #region Fields
@@ -428,7 +428,7 @@ namespace WifiPlug.Api
         /// </summary>
         /// <param name="apiKey">The API key.</param>
         /// <param name="apiSecret">The API secret.</param>
-        public ApiClient(string apiKey, string apiSecret) : this(API_URL) {
+        public ApiClient(string apiKey, string apiSecret) : this(ApiUrl) {
             if (apiKey == null)
                 throw new ArgumentNullException(nameof(apiKey));
             else if (apiSecret == null)
@@ -450,7 +450,7 @@ namespace WifiPlug.Api
         public ApiClient(string apiUrl) {
             // setup client
             _client = new HttpClient();
-            _client.BaseAddress = new Uri(apiUrl == null ? API_URL : apiUrl);
+            _client.BaseAddress = new Uri(apiUrl == null ? ApiUrl : apiUrl);
             _client.DefaultRequestHeaders.Add("X-API-Client", "api-client-net/1.0");
 
             // initialize operations

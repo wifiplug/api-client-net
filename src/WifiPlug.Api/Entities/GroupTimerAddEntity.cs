@@ -22,6 +22,7 @@ namespace WifiPlug.Api.Entities
         /// Gets or sets the days the timer will repeat on, if any.
         /// </summary>
         [JsonProperty(PropertyName = "repeats", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonConverter(typeof(TimerRepetitionConverter))]
         public TimerRepetition Repeats { get; set; }
 
         /// <summary>

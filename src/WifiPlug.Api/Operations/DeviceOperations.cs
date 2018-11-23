@@ -24,6 +24,17 @@ namespace WifiPlug.Api.Operations
         protected ApiClient _client;
 
         /// <summary>
+        /// Adds a device.
+        /// </summary>
+        /// <param name="entity">The group entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
+        /// <returns>The added device.</returns>
+        public Task<DeviceEntity> AddDeviceAsync(DeviceAddEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
+            return _client.RequestJsonSerializedAsync<DeviceAddEntity, DeviceEntity>(HttpMethod.Post, "device/add", entity, cancellationToken);
+        }
+
+        /// <summary>
         /// Gets a live energy reading from the device service, if applicable.
         /// </summary>
         /// <param name="deviceUuid">The device UUID.</param>
