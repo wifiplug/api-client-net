@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -10,15 +11,13 @@ namespace WifiPlug.Api
     /// <summary>
     /// Provides access to the WIFIPLUG event subscription API.
     /// </summary>
-    class EventClient : IObservable<Event>
+    public class EventClient : IObservable<Event>
     {
         #region Constants
-        internal const string API_URL = "wss://event.wifiplug.co.uk/v1.0";
+        internal const string EventUri = "wss://event.wifiplug.co.uk/v1.0";
         #endregion
 
         #region Fields
-        private string _apiKey = null;
-        private string _apiSecret = null;
         private ClientWebSocket _client = null;
         private Uri _uri = null;
         #endregion
@@ -82,7 +81,7 @@ namespace WifiPlug.Api
         /// <param name="apiKey">The API key.</param>
         /// <param name="apiSecret">The API secret.</param>
         public EventClient(string apiKey, string apiSecret) 
-            : this(null, apiKey, apiSecret){
+            : this(EventUri, apiKey, apiSecret){
         }
 
         /// <summary>
@@ -93,7 +92,14 @@ namespace WifiPlug.Api
         /// <param name="apiKey">The API key.</param>
         /// <param name="apiSecret">The API secret.</param>
         public EventClient(string eventUrl, string apiKey, string apiSecret) {
+            // create client
             _client = new ClientWebSocket();
+
+            // build uri
+            UriBuilder uriBuilder = new UriBuilder(eventUrl);
+            uriBuilder.Query = $"key={WebUtility.UrlEncode(apiKey)}&secret={WebUtility.UrlEncode(apiSecret)}";
+
+            _uri = uriBuilder.Uri;
         }
         #endregion
     }

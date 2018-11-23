@@ -12,7 +12,7 @@ namespace WifiPlug.Api.Authentication
     /// <summary>
     /// Provides full OAuth2 authentication.
     /// </summary>
-    sealed class OAuth2Authentication : BearerAuthentication
+    public sealed class OAuth2Authentication : BearerAuthentication
     {
         #region Constants
         internal const string TokenUrl = "https://account.wifiplug.co.uk/oauth2/token";

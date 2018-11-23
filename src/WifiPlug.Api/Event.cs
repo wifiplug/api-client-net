@@ -8,7 +8,7 @@ namespace WifiPlug.Api
     /// <summary>
     /// Represents a received event.
     /// </summary>
-    class Event
+    public class Event
     {
         #region Properties
         public string Name { get; private set; }
