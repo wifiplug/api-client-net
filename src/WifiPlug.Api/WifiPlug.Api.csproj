@@ -32,4 +32,8 @@
     <PackageReference Include="System.Net.WebSockets.Client" Version="4.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Scopes\" />
+  </ItemGroup>
+
 </Project>

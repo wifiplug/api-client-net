@@ -252,3 +252,4 @@ paket-files/
 *.sln.iml
 
 samples/Example.Cli/Properties/launchSettings.json
+samples/Example.EventCli/Properties/launchSettings.json
