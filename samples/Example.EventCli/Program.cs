@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using WifiPlug.Api;
+using WifiPlug.Api.Scopes;
 
 namespace Example.EventCli
 {
@@ -13,7 +14,13 @@ namespace Example.EventCli
 
         static async Task MainAsync(string[] args) {
             EventClient eventClient = new EventClient("ws://localhost/v1.0", Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
-            await eventClient.SubscribeAsync("device:*/*");
+            eventClient.Scope = new SessionScope(Environment.GetEnvironmentVariable("SCOPE_SESSION"));
+
+            eventClient.Received += (o, e) => Console.WriteLine($"Received event {e.Event.Name}");
+            eventClient.Connected += (o, e) => Console.WriteLine($"Connected");
+            eventClient.Disconnected += (o, e) => Console.WriteLine($"Disconnected");
+
+            await eventClient.SubscribeAsync("device:*.*");
 
             await Task.Delay(3000000);
         }
