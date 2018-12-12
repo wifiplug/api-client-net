@@ -44,6 +44,18 @@ namespace WifiPlug.Api.Entities
         public Guid UUID { get; set; }
 
         /// <summary>
+        /// Gets or sets the activator.
+        /// </summary>
+        [JsonProperty("activator")]
+        public string Activator { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the activator UUID.
+        /// </summary>
+        [JsonProperty("activator_uuid")]
+        public Guid ActivatorUUID { get; set; }
+
+        /// <summary>
         /// Gets or sets the timestamp.
         /// </summary>
         [JsonProperty("resource_uuid")]
