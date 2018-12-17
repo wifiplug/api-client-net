@@ -13,7 +13,7 @@ namespace Example.EventCli
         static void Main(string[] args) => MainAsync(args).Wait();
 
         static async Task MainAsync(string[] args) {
-            EventClient eventClient = new EventClient("ws://localhost/v1.0", Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
+            EventClient eventClient = new EventClient("wss://event.wifiplug.co.uk/v1.0", Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
             eventClient.Scope = new SessionScope(Environment.GetEnvironmentVariable("SCOPE_SESSION"));
 
             eventClient.Received += (o, e) => Console.WriteLine($"Received event {e.Event.Name}");
