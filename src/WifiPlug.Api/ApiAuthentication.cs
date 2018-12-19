@@ -38,7 +38,7 @@ namespace WifiPlug.Api
         /// </summary>
         /// <param name="client">The client.</param>
         /// <returns>If the request should be attempted again.</returns>
-        public abstract Task<bool> ReauthorizeAsync(IBaseApiClient client);
+        public abstract Task<bool> ReauthorizeAsync(IBaseApiRequestor client);
 
         /// <summary>
         /// Serializes the authentication object for persistent storage.

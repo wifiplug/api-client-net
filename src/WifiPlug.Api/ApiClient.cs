@@ -20,7 +20,7 @@ namespace WifiPlug.Api
     /// <summary>
     /// Provides access to the WIFIPLUG API services and systems.
     /// </summary>
-    public class ApiClient : BaseApiClient, IApiClient
+    public class ApiClient : BaseApiClient
     {
         #region Fields
         private DeviceOperations _deviceOperations;
@@ -34,7 +34,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the device operations.
         /// </summary>
-        public override IDeviceOperations Devices {
+        public IDeviceOperations Devices {
             get {
                 return _deviceOperations;
             }
@@ -43,7 +43,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the session operations.
         /// </summary>
-        public override ISessionOperations Sessions {
+        public ISessionOperations Sessions {
             get {
                 return _sessionOperations;
             }
@@ -52,27 +52,25 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the user operations.
         /// </summary>
-        public override IUserOperations Users {
+        public IUserOperations Users {
             get {
                 return _userOperations;
             }
         }
 
-
         /// <summary>
         /// Gets the group operations.
         /// </summary>
-        public override IGroupOperations Groups {
+        public IGroupOperations Groups {
             get {
                 return _groupOperations;
             }
         }
 
-
         /// <summary>
         /// Gets the event operations.
         /// </summary>
-        public override IEventOperations Events {
+        public IEventOperations Events {
             get {
                 return _eventOperations;
             }

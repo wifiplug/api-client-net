@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (C) WIFIPLUG. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,7 +17,7 @@ namespace WifiPlug.Api
     /// <summary>
     /// Provides access to the WIFIPLUG API services and systems.
     /// </summary>
-    public abstract class BaseApiClient : IApiClient, IBaseApiClient
+    public abstract class BaseApiClient : IBaseApiClient, IBaseApiRequestor
     {
         #region Constants
         internal const string ApiUrl = "https://api.wifiplug.co.uk/v1.0/";
@@ -98,31 +101,6 @@ namespace WifiPlug.Api
                 _client.BaseAddress = value;
             }
         }
-
-        /// <summary>
-        /// Gets the device operations.
-        /// </summary>
-        public abstract IDeviceOperations Devices { get; }
-
-        /// <summary>
-        /// Gets the session operations.
-        /// </summary>
-        public abstract ISessionOperations Sessions { get; }
-
-        /// <summary>
-        /// Gets the user operations.
-        /// </summary>
-        public abstract IUserOperations Users { get; }
-
-        /// <summary>
-        /// Gets the group operations.
-        /// </summary>
-        public abstract IGroupOperations Groups { get; }
-
-        /// <summary>
-        /// Gets the event operations.
-        /// </summary>
-        public abstract IEventOperations Events { get; }
         #endregion
 
         #region Rest Methods
@@ -134,12 +112,12 @@ namespace WifiPlug.Api
         /// <param name="content">The request content, or null.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response message.</returns>
-        async Task<HttpResponseMessage> IBaseApiClient.RequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
+        async Task<HttpResponseMessage> IBaseApiRequestor.RequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
             bool hasReauthorised = false;
 
             for (int i = 0; i < _retryCount; i++) {
                 try {
-                    return await ((IBaseApiClient)this).RawRequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
+                    return await ((IBaseApiRequestor)this).RawRequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
                 } catch (ApiException ex) {
                     if (ex.StatusCode == HttpStatusCode.BadGateway && i < _retryCount - 1) {
                         await Task.Delay(_retryDelay, cancellationToken).ConfigureAwait(false);
@@ -173,7 +151,7 @@ namespace WifiPlug.Api
         /// <param name="content"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task<HttpResponseMessage> IBaseApiClient.RawRequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
+        async Task<HttpResponseMessage> IBaseApiRequestor.RawRequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
             // throw if cancelled
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -281,9 +259,9 @@ namespace WifiPlug.Api
         /// <param name="content">The request content, or null.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response string.</returns>
-        async Task<string> IBaseApiClient.RequestStringAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
+        async Task<string> IBaseApiRequestor.RequestStringAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
             return await (
-                await ((IBaseApiClient)this).RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false))
+                await ((IBaseApiRequestor)this).RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false))
                 .Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -296,8 +274,8 @@ namespace WifiPlug.Api
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response message.</returns>
         /// <returns>The JSON object response.</returns>
-        async Task<JObject> IBaseApiClient.RequestJsonObjectAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
-            HttpResponseMessage response = await ((IBaseApiClient)this).RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
+        async Task<JObject> IBaseApiRequestor.RequestJsonObjectAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await ((IBaseApiRequestor)this).RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
                 throw new ApiException("Invalid server response", new ApiError[0], response);
@@ -313,8 +291,8 @@ namespace WifiPlug.Api
         /// <param name="body">The JSON body.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task IBaseApiClient.RequestJsonAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
-            return ((IBaseApiClient)this).RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken);
+        Task IBaseApiRequestor.RequestJsonAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
+            return ((IBaseApiRequestor)this).RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken);
         }
 
         /// <summary>
@@ -325,8 +303,8 @@ namespace WifiPlug.Api
         /// <param name="body">The JSON body.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The JSON object response.</returns>
-        Task<JObject> IBaseApiClient.RequestJsonObjectAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
-            return ((IBaseApiClient)this).RequestJsonObjectAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"));
+        Task<JObject> IBaseApiRequestor.RequestJsonObjectAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
+            return ((IBaseApiRequestor)this).RequestJsonObjectAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"));
         }
 
         /// <summary>
@@ -338,8 +316,8 @@ namespace WifiPlug.Api
         /// <param name="body">The object to be serialized.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task IBaseApiClient.RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken) {
-            return ((IBaseApiClient)this).RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken);
+        Task IBaseApiRequestor.RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken) {
+            return ((IBaseApiRequestor)this).RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken);
         }
 
         /// <summary>
@@ -351,8 +329,8 @@ namespace WifiPlug.Api
         /// <param name="body">The object to be serialized.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The JSON object response.</returns>
-        async Task<JObject> IBaseApiClient.RequestJsonSerializedObjectAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken) {
-            HttpResponseMessage response = await ((IBaseApiClient)this).RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
+        async Task<JObject> IBaseApiRequestor.RequestJsonSerializedObjectAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await ((IBaseApiRequestor)this).RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
                 throw new ApiException("Invalid server response", new ApiError[0], response);
@@ -369,8 +347,8 @@ namespace WifiPlug.Api
         /// <param name="body">The JSON body.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response object.</returns>
-        async Task<TRes> IBaseApiClient.RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
-            HttpResponseMessage response = await ((IBaseApiClient)this).RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
+        async Task<TRes> IBaseApiRequestor.RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await ((IBaseApiRequestor)this).RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
                 throw new ApiException("Invalid server response", new ApiError[0], response);
@@ -388,9 +366,9 @@ namespace WifiPlug.Api
         /// <param name="body">The JSON body.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response object.</returns>
-        async Task<TRes> IBaseApiClient.RequestJsonSerializedAsync<TReq, TRes>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken) {
+        async Task<TRes> IBaseApiRequestor.RequestJsonSerializedAsync<TReq, TRes>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken) {
             string s = JsonConvert.SerializeObject(body);
-            HttpResponseMessage response = await ((IBaseApiClient)this).RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response = await ((IBaseApiRequestor)this).RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"), cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
                 throw new ApiException("Invalid server response", new ApiError[0], response);
@@ -406,8 +384,8 @@ namespace WifiPlug.Api
         /// <param name="path">The target path.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response object.</returns>
-        async Task<TRes> IBaseApiClient.RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, CancellationToken cancellationToken) {
-            HttpResponseMessage response = await ((IBaseApiClient)this).RequestAsync(method, path, new StringContent("", Encoding.UTF8), cancellationToken).ConfigureAwait(false);
+        async Task<TRes> IBaseApiRequestor.RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await ((IBaseApiRequestor)this).RequestAsync(method, path, new StringContent("", Encoding.UTF8), cancellationToken).ConfigureAwait(false);
 
             if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
                 throw new ApiException("Invalid server response", new ApiError[0], response);
@@ -423,7 +401,7 @@ namespace WifiPlug.Api
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The ping response.</returns>
         public virtual async Task<string> PingAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-            return await (await ((IBaseApiClient)this).RequestAsync(HttpMethod.Get, "ping", null, cancellationToken).ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
+            return await (await ((IBaseApiRequestor)this).RequestAsync(HttpMethod.Get, "ping", null, cancellationToken).ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
         }
         #endregion
 

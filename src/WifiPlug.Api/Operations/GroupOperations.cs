@@ -20,7 +20,7 @@ namespace WifiPlug.Api.Operations
         /// <summary>
         /// The API client.
         /// </summary>
-        protected IBaseApiClient _client;
+        protected IBaseApiRequestor _client;
 
         /// <summary>
         /// Scans the group list.
@@ -329,7 +329,7 @@ namespace WifiPlug.Api.Operations
         /// Creates a group operations object.
         /// </summary>
         /// <param name="client">The client.</param>
-        protected internal GroupOperations(IBaseApiClient client) {
+        protected internal GroupOperations(IBaseApiRequestor client) {
             _client = client;
         }
     }

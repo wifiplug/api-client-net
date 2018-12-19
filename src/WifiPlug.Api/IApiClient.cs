@@ -3,47 +3,39 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using WifiPlug.Api.Operations;
 
 namespace WifiPlug.Api
 {
     /// <summary>
-    /// Defines the interface for an api client.
+    /// Defines the interface for a basic API client.
     /// </summary>
-    public interface IApiClient
+    public interface IApiClient : IBaseApiClient
     {
         /// <summary>
-        /// Gets or sets the retry count for transient failures.
+        /// Gets the device operations.
         /// </summary>
-        int RetryCount { get; set; }
+        IDeviceOperations Devices { get; }
 
         /// <summary>
-        /// Gets or sets the retry delay.
+        /// Gets the session operations.
         /// </summary>
-        TimeSpan RetryDelay { get; set; }
+        ISessionOperations Sessions { get; }
 
         /// <summary>
-        /// Gets or sets the authentication method.
+        /// Gets the user operations.
         /// </summary>
-        ApiAuthentication Authentication { get; set; }
+        IUserOperations Users { get; }
 
         /// <summary>
-        /// Gets or sets the timeout for requests.
+        /// Gets the group operations.
         /// </summary>
-        TimeSpan Timeout { get; set; }
+        IGroupOperations Groups { get; }
 
         /// <summary>
-        /// Gets the underlying http client.
+        /// Gets the event operations.
         /// </summary>
-        HttpClient Client { get; }
-
-        /// <summary>
-        /// Gets or sets the base address.
-        /// </summary>
-        Uri BaseAddress { get; set; }
+        IEventOperations Events { get; }
     }
 }

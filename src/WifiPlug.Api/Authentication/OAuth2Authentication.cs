@@ -66,7 +66,7 @@ namespace WifiPlug.Api.Authentication
         /// </summary>
         /// <param name="client">The client.</param>
         /// <returns></returns>
-        public override Task<bool> ReauthorizeAsync(IBaseApiClient client) {
+        public override Task<bool> ReauthorizeAsync(IBaseApiRequestor client) {
             // create refresh client
             HttpClient refreshClient = new HttpClient();
             refreshClient.BaseAddress = _tokenUri;

@@ -68,7 +68,7 @@ namespace WifiPlug.Api.Authentication
         /// <param name="client">The client.</param>
         /// <remarks>Not supported currently.</remarks>
         /// <returns></returns>
-        public override Task<bool> ReauthorizeAsync(IBaseApiClient client) {
+        public override Task<bool> ReauthorizeAsync(IBaseApiRequestor client) {
             return Task.FromResult(false);
         }
         #endregion

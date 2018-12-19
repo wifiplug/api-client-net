@@ -24,7 +24,7 @@ namespace WifiPlug.Api.Operations
         /// <summary>
         /// The API client.
         /// </summary>
-        protected IBaseApiClient _client;
+        protected IBaseApiRequestor _client;
         
         /// <summary>
         /// Gets a live energy reading from the device service, if applicable.
@@ -491,7 +491,7 @@ namespace WifiPlug.Api.Operations
         /// Creates a device operations object.
         /// </summary>
         /// <param name="client">The client.</param>
-        protected internal DeviceOperations(IBaseApiClient client) {
+        protected internal DeviceOperations(IBaseApiRequestor client) {
             _client = client;
         }
     }

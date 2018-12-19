@@ -20,7 +20,7 @@ namespace WifiPlug.Api.Operations
         /// <summary>
         /// The API client.
         /// </summary>
-        protected IBaseApiClient _client;
+        protected IBaseApiRequestor _client;
 
         /// <summary>
         /// Edits the currently authenticated user.
