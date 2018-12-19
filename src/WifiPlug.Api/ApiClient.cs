@@ -34,7 +34,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the device operations.
         /// </summary>
-        public IDeviceOperations Devices {
+        public virtual IDeviceOperations Devices {
             get {
                 return _deviceOperations;
             }
@@ -43,7 +43,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the session operations.
         /// </summary>
-        public ISessionOperations Sessions {
+        public virtual ISessionOperations Sessions {
             get {
                 return _sessionOperations;
             }
@@ -52,7 +52,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the user operations.
         /// </summary>
-        public IUserOperations Users {
+        public virtual IUserOperations Users {
             get {
                 return _userOperations;
             }
@@ -61,7 +61,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the group operations.
         /// </summary>
-        public IGroupOperations Groups {
+        public virtual IGroupOperations Groups {
             get {
                 return _groupOperations;
             }
@@ -70,7 +70,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the event operations.
         /// </summary>
-        public IEventOperations Events {
+        public virtual IEventOperations Events {
             get {
                 return _eventOperations;
             }
