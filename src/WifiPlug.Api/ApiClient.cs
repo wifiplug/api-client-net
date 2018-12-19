@@ -20,7 +20,7 @@ namespace WifiPlug.Api
     /// <summary>
     /// Provides access to the WIFIPLUG API services and systems.
     /// </summary>
-    public class ApiClient : BaseApiClient
+    public class ApiClient : BaseApiClient, IApiClient
     {
         #region Fields
         private DeviceOperations _deviceOperations;
