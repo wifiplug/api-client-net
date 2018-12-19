@@ -45,7 +45,7 @@ namespace WifiPlug.Api.Operations
         /// Creates a user operations object.
         /// </summary>
         /// <param name="client">The client.</param>
-        protected internal UserOperations(BaseApiClient client) {
+        protected internal UserOperations(IBaseApiRequestor client) {
             _client = client;
         }
     }
