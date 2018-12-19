@@ -12,7 +12,6 @@ namespace WifiPlug.Api.Authentication
 {
     /// <summary>
     /// Provides session token authentication.
-    /// <remarks>This authentication is internal and should not be used by 3rd parties.</remarks>
     /// </summary>
     public class SessionAuthentication : ApiAuthentication
     {
@@ -69,7 +68,7 @@ namespace WifiPlug.Api.Authentication
         /// <param name="client">The client.</param>
         /// <remarks>Not supported currently.</remarks>
         /// <returns></returns>
-        public override Task<bool> ReauthorizeAsync(ApiClient client) {
+        public override Task<bool> ReauthorizeAsync(IBaseApiClient client) {
             return Task.FromResult(false);
         }
         #endregion

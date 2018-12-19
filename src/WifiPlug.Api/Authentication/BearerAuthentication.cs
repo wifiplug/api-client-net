@@ -13,7 +13,7 @@ namespace WifiPlug.Api.Authentication
 {
     /// <summary>
     /// Provides bearer authentication, to remain library agnostic it does not support refresh tokens.
-    /// Inherit <see cref="BearerAuthentication"/> and implement <see cref="BearerAuthentication.ReauthorizeAsync(ApiClient)"/> to add this functionality.
+    /// Inherit <see cref="BearerAuthentication"/> and implement <see cref="BearerAuthentication.ReauthorizeAsync(IBaseApiClient)"/> to add this functionality.
     /// </summary>
     public class BearerAuthentication : ApiAuthentication
     {
@@ -71,7 +71,7 @@ namespace WifiPlug.Api.Authentication
         /// </summary>
         /// <param name="client">The client.</param>
         /// <returns></returns>
-        public override Task<bool> ReauthorizeAsync(ApiClient client) {
+        public override Task<bool> ReauthorizeAsync(IBaseApiClient client) {
             return Task.FromResult(false);
         }
         #endregion

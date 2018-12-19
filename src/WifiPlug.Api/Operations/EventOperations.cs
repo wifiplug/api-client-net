@@ -19,7 +19,7 @@ namespace WifiPlug.Api.Operations
         /// <summary>
         /// The API client.
         /// </summary>
-        protected ApiClient _client;
+        protected IBaseApiClient _client;
         
         /// <summary>
         /// Gets a event by UUID.
@@ -35,7 +35,7 @@ namespace WifiPlug.Api.Operations
         /// Creates a event operations object.
         /// </summary>
         /// <param name="client">The client.</param>
-        protected internal EventOperations(ApiClient client) {
+        protected internal EventOperations(IBaseApiClient client) {
             _client = client;
         }
     }

@@ -21,7 +21,7 @@ namespace WifiPlug.Api.Operations
         /// <summary>
         /// The API client.
         /// </summary>
-        protected ApiClient _client;
+        protected IBaseApiClient _client;
 
         /// <summary>
         /// Gets the current session information.
@@ -33,44 +33,10 @@ namespace WifiPlug.Api.Operations
         }
 
         /// <summary>
-        /// Deletes the current session (logout).
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public Task DeleteCurrentSessionAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-            return _client.RequestAsync(HttpMethod.Delete, "session", null, cancellationToken);
-        }
-
-        /// <summary>
-        /// Login with the provided login entity.
-        /// </summary>
-        /// <param name="entity">The login entity.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public Task<SessionEntity> LoginAsync(SessionLoginEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
-            return _client.RequestJsonSerializedAsync<SessionLoginEntity, SessionEntity>(HttpMethod.Post, "session/login", entity, cancellationToken);
-        }
-
-        /// <summary>
-        /// Login with the provided username and password.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="password">The password.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <remarks>This operation is internal and won't work with normal API keys. Nor is it stable.</remarks>
-        /// <returns></returns>
-        public Task<SessionEntity> LoginAsync(string username, string password, CancellationToken cancellationToken = default(CancellationToken)) {
-            return _client.RequestJsonSerializedAsync<SessionLoginEntity, SessionEntity>(HttpMethod.Post, "session/login", new SessionLoginEntity() {
-                Username = username,
-                Password = password
-            }, cancellationToken);
-        }
-
-        /// <summary>
         /// Creates a session operations object.
         /// </summary>
         /// <param name="client">The client.</param>
-        protected internal SessionOperations(ApiClient client) {
+        protected internal SessionOperations(BaseApiClient client) {
             _client = client;
         }
     }
