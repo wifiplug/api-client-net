@@ -222,6 +222,12 @@ namespace WifiPlug.Api
 
                 // try and auto reconnect
                 try {
+                    // ensure the client has been aborted
+                    try {
+                        _client.Abort();
+                    } catch (Exception) { }
+
+                    // try and reconnect
                     await ConnectAndAuthenticateAsync(default(CancellationToken), true).ConfigureAwait(false);
                     await ResubscribeAllAsync().ConfigureAwait(false);
                 } catch {
@@ -313,7 +319,7 @@ namespace WifiPlug.Api
         /// <param name="selector">The selector.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task UnsubscribeNoConnectAsync(EventSelector selector, CancellationToken cancellationToken = default(CancellationToken)) {
+        private async Task UnsubscribeNoConnectAsync(EventSelector selector, CancellationToken cancellationToken = default(CancellationToken)) {
             // throw if cancelled
             cancellationToken.ThrowIfCancellationRequested();
 
