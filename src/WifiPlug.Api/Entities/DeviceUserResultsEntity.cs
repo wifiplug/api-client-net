@@ -29,6 +29,6 @@ namespace WifiPlug.Api.Entities
         /// Gets or sets the total number of device users.
         /// </summary>
         [JsonProperty(PropertyName = "total_user_count")]
-        public int TotalUsers { get; set; }
+        public long TotalUsers { get; set; }
     }
 }

@@ -29,6 +29,6 @@ namespace WifiPlug.Api.Entities
         /// Gets or sets the total number of events.
         /// </summary>
         [JsonProperty(PropertyName = "total_event_count")]
-        public int TotalEvents { get; set; }
+        public long TotalEvents { get; set; }
     }
 }

@@ -29,6 +29,6 @@ namespace WifiPlug.Api.Entities
         /// Gets or sets the total number of timers.
         /// </summary>
         [JsonProperty(PropertyName = "total_timer_count")]
-        public int TotalTimers { get; set; }
+        public long TotalTimers { get; set; }
     }
 }

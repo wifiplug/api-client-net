@@ -14,7 +14,7 @@ namespace WifiPlug.Api
     public sealed class ScanResult<TEntity>
     {
         #region Fields
-        private int _total;
+        private long _total;
         private Cursor _cursor;
         private IEnumerable<TEntity> _entities;
         #endregion
@@ -50,7 +50,7 @@ namespace WifiPlug.Api
         /// <summary>
         /// Gets the total number of entities available according to this scan.
         /// </summary>
-        public int Total {
+        public long Total {
             get {
                 return _total;
             }
@@ -63,7 +63,7 @@ namespace WifiPlug.Api
         /// </summary>
         /// <param name="entities">The entities</param>
         /// <param name="total">The total number of entities.</param>
-        internal ScanResult(IEnumerable<TEntity> entities, int total) {
+        internal ScanResult(IEnumerable<TEntity> entities, long total) {
             _entities = entities;
             _cursor = Cursor.None;
             _total = total;
@@ -75,7 +75,7 @@ namespace WifiPlug.Api
         /// <param name="entities">The entities</param>
         /// <param name="total">The total number of entities.</param>
         /// <param name="nextCursor">The cursor.</param>
-        internal ScanResult(IEnumerable<TEntity> entities, int total, Cursor nextCursor) {
+        internal ScanResult(IEnumerable<TEntity> entities, long total, Cursor nextCursor) {
             _entities = entities;
             _cursor = nextCursor;
             _total = total;
@@ -87,7 +87,7 @@ namespace WifiPlug.Api
         /// <param name="entities">The entities</param>
         /// <param name="total">The total number of entities.</param>
         /// <param name="nextCursor">The cursor.</param>
-        internal ScanResult(IEnumerable<TEntity> entities, int total, string nextCursor) {
+        internal ScanResult(IEnumerable<TEntity> entities, long total, string nextCursor) {
             _entities = entities;
             _cursor = nextCursor == null ? default(Cursor) : new Cursor(nextCursor);
             _total = total;

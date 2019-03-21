@@ -29,6 +29,6 @@ namespace WifiPlug.Api.Entities
         /// Gets or sets the total number of groups.
         /// </summary>
         [JsonProperty(PropertyName = "total_group_count")]
-        public int TotalGroups { get; set; }
+        public long TotalGroups { get; set; }
     }
 }
