@@ -63,7 +63,7 @@ namespace WifiPlug.Api
         /// </summary>
         /// <param name="entities">The entities</param>
         /// <param name="total">The total number of entities.</param>
-        internal ScanResult(IEnumerable<TEntity> entities, long total) {
+        public ScanResult(IEnumerable<TEntity> entities, long total) {
             _entities = entities;
             _cursor = Cursor.None;
             _total = total;
@@ -75,7 +75,7 @@ namespace WifiPlug.Api
         /// <param name="entities">The entities</param>
         /// <param name="total">The total number of entities.</param>
         /// <param name="nextCursor">The cursor.</param>
-        internal ScanResult(IEnumerable<TEntity> entities, long total, Cursor nextCursor) {
+        public ScanResult(IEnumerable<TEntity> entities, long total, Cursor nextCursor) {
             _entities = entities;
             _cursor = nextCursor;
             _total = total;
@@ -87,7 +87,7 @@ namespace WifiPlug.Api
         /// <param name="entities">The entities</param>
         /// <param name="total">The total number of entities.</param>
         /// <param name="nextCursor">The cursor.</param>
-        internal ScanResult(IEnumerable<TEntity> entities, long total, string nextCursor) {
+        public ScanResult(IEnumerable<TEntity> entities, long total, string nextCursor) {
             _entities = entities;
             _cursor = nextCursor == null ? default(Cursor) : new Cursor(nextCursor);
             _total = total;
