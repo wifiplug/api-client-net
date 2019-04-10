@@ -361,6 +361,34 @@ namespace WifiPlug.Api.Operations
         }
 
         /// <summary>
+        /// Edits a device service characteristic entity.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID.</param>
+        /// <param name="serviceUuid">The service UUID.</param>
+        /// <param name="characteristicUuid">The characteristic UUID.</param>
+        /// <param name="entity">The entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public Task EditDeviceServiceCharacteristicAsync(Guid deviceUuid, Guid serviceUuid, Guid characteristicUuid, DeviceServiceCharacteristicEditEntity entity, CancellationToken cancellationToken = default(CancellationToken)) {
+            return _client.RequestJsonSerializedAsync<DeviceServiceCharacteristicEditEntity, DeviceEntity>(HttpMethod.Post, $"device/{deviceUuid}/service/{serviceUuid}/characteristic/{characteristicUuid}", entity, cancellationToken);
+        }
+
+        /// <summary>
+        /// Edits a device service characteristic entity.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID.</param>
+        /// <param name="serviceUuid">The service UUID.</param>
+        /// <param name="characteristicUuid">The characteristic UUID.</param>
+        /// <param name="value">The new value.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public Task EditDeviceServiceCharacteristicAsync(Guid deviceUuid, Guid serviceUuid, Guid characteristicUuid, object value, CancellationToken cancellationToken = default(CancellationToken)) {
+            return EditDeviceServiceCharacteristicAsync(deviceUuid, serviceUuid, characteristicUuid, new DeviceServiceCharacteristicEditEntity() {
+                Value = value
+            }, cancellationToken);
+        }
+
+        /// <summary>
         /// Scans the device timer list.
         /// </summary>
         /// <param name="deviceUuid">The device UUID.</param>

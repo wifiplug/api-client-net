@@ -142,6 +142,28 @@ namespace WifiPlug.Api.Operations
         Task<DeviceServiceEntity> GetDeviceServiceAsync(Guid deviceUuid, Guid serviceUuid, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Edits a device service characteristic entity.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID.</param>
+        /// <param name="serviceUuid">The service UUID.</param>
+        /// <param name="characteristicUuid">The characteristic UUID.</param>
+        /// <param name="entity">The entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task EditDeviceServiceCharacteristicAsync(Guid deviceUuid, Guid serviceUuid, Guid characteristicUuid, DeviceServiceCharacteristicEditEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Edits a device service characteristic entity.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID.</param>
+        /// <param name="serviceUuid">The service UUID.</param>
+        /// <param name="characteristicUuid">The characteristic UUID.</param>
+        /// <param name="value">The new value.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task EditDeviceServiceCharacteristicAsync(Guid deviceUuid, Guid serviceUuid, Guid characteristicUuid, object value, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Gets all device users.
         /// </summary>
         /// <param name="deviceUuid">The device UUID.</param>

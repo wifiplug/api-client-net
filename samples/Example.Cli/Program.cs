@@ -19,10 +19,12 @@ namespace Example.Cli
 
         static async Task AsyncMain(string[] args) {
             ApiClient cc = new ApiClient(Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
+
             cc.Authentication = new SessionAuthentication(Environment.GetEnvironmentVariable("SESSION_TOKEN"));
 
-            var devices = await cc.Devices.ListDevicesAsync();
-            var events = await cc.Devices.ListDeviceEventsAsync(devices[6].UUID);
+            var device = await cc.Devices.GetDeviceAsync(new Guid("a765fb47-f2f5-40c9-bfb8-b63a8515adfd"));
+
+            await cc.Devices.EditDeviceServiceCharacteristicAsync(new Guid("a765fb47-f2f5-40c9-bfb8-b63a8515adfd"), new Guid("8677ecf6-7fd4-4144-8a6d-b3eef7efa00a"), new Guid("6862bf69-1e2a-4e0b-b27a-afc8c498c806"), true);
         }
     }
 }
