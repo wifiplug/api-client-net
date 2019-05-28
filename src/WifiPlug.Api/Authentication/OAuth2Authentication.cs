@@ -12,7 +12,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WifiPlug.Api.Entities;
 
 namespace WifiPlug.Api.Authentication
 {
@@ -92,15 +91,17 @@ namespace WifiPlug.Api.Authentication
         }
 
         /// <summary>
-        /// Exchange an authorization code for an access and refresh token.
+        /// Exchange an authorization code for an ApiAuthentication.
         /// </summary>
-        /// <param name="clientID">Your client ID</param>
-        /// <param name="clientSecret">Your client secret</param>
-        /// <param name="authorizationCode">The authorization code.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="clientID"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="authorizationCode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="baseUrl"></param>
         /// <returns></returns>
-        public static async Task<OAuth2TokenResponseEntity> ExchangeAuthorizationCodeAForTokensAsync(string clientID, string clientSecret, string authorizationCode, CancellationToken cancellationToken = default(CancellationToken), string baseUrl = null)
+        public static async Task<OAuth2Authentication> ExchangeAuthorizationCodeAsync(string clientID, string clientSecret, string authorizationCode, CancellationToken cancellationToken = default(CancellationToken), string baseUrl = null)
         {
+            // Get tokens
             // Create the form data
             var exchangeContent = new FormUrlEncodedContent(new[]
             {
@@ -114,22 +115,8 @@ namespace WifiPlug.Api.Authentication
             OAuth2AuthenticationClient client = new OAuth2AuthenticationClient(baseUrl ?? DefaultUrl);
 
             // Make request
-            return await client.RequestJsonSerializedWithFormDataAsync<OAuth2TokenResponseEntity>(HttpMethod.Post, $"{baseUrl ?? DefaultUrl}/token", exchangeContent, cancellationToken);
-        }
+            var response = await client.RequestJsonSerializedWithFormDataAsync<OAuth2TokenResponseEntity>(HttpMethod.Post, $"{baseUrl ?? DefaultUrl}/token", exchangeContent, cancellationToken);
 
-        /// <summary>
-        /// Exchange an authorization code for an ApiAuthentication.
-        /// </summary>
-        /// <param name="clientID"></param>
-        /// <param name="clientSecret"></param>
-        /// <param name="authorizationCode"></param>
-        /// <param name="cancellationToken"></param>
-        /// <param name="baseUrl"></param>
-        /// <returns></returns>
-        public static async Task<OAuth2Authentication> ExchangeAuthorizationCodeForAuthenticationAsync(string clientID, string clientSecret, string authorizationCode, CancellationToken cancellationToken = default(CancellationToken), string baseUrl = null)
-        {
-            // Get tokens
-            OAuth2TokenResponseEntity response = await ExchangeAuthorizationCodeAForTokensAsync(clientID, clientSecret, authorizationCode, cancellationToken, baseUrl);
             return new OAuth2Authentication(clientID, clientSecret, response.AccessToken, response.RefreshToken);
         }
 
@@ -138,7 +125,7 @@ namespace WifiPlug.Api.Authentication
         /// </summary>
         /// <param name="client">The client.</param>
         /// <returns></returns>
-        public override async Task<bool> ReauthorizeAsync(IBaseApiRequestor client) {
+        protected internal override async Task<bool> ReauthorizeAsync(IBaseApiRequestor client) {
             // Create the form data
             var exchangeContent = new FormUrlEncodedContent(new[]
             {
@@ -160,8 +147,7 @@ namespace WifiPlug.Api.Authentication
                 _refreshToken = response.RefreshToken;
 
                 return true;
-            } catch (Exception ex)
-            {
+            } catch (Exception) {
                 return false;
             }
         }
@@ -211,273 +197,244 @@ namespace WifiPlug.Api.Authentication
                 _baseUrl = DefaultUrl;
         }
         #endregion
+    }
 
-
+    /// <summary>
+    /// Defines a HTTP client to be used for OAuth2 requests
+    /// </summary>
+    class OAuth2AuthenticationClient : HttpClient
+    {
+        private string _baseUrl;
+        private HttpClient _httpClient;
+        private int _retryCount = 3;
+        private TimeSpan _retryDelay = TimeSpan.FromSeconds(3);
 
         /// <summary>
-        /// Defines a HTTP client to be used for OAuth2 requests
+        /// Sends a REST request to the API, includes retry logic and reauthorisation.
         /// </summary>
-        private class OAuth2AuthenticationClient : HttpClient
-        {
-            private string _baseUrl;
-            private HttpClient _httpClient;
-            private int _retryCount = 3;
-            private TimeSpan _retryDelay = TimeSpan.FromSeconds(3);
-
-            /// <summary>
-            /// Sends a REST request to the API, includes retry logic and reauthorisation.
-            /// </summary>
-            /// <param name="method">The target method.</param>
-            /// <param name="path">The target path.</param>
-            /// <param name="content">The request content, or null.</param>
-            /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>The response message.</returns>
-            async Task<HttpResponseMessage> RequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken)
-            {
-                for (int i = 0; i < _retryCount; i++)
-                {
-                    try
-                    {
-                        return await (RawRequestAsync(method, path, content, cancellationToken).ConfigureAwait(false));
-                    }
-                    catch (OAuth2AuthenticationException ex)
-                    {
-                        if (ex.StatusCode == HttpStatusCode.BadGateway && i < _retryCount - 1)
-                        {
-                            await Task.Delay(_retryDelay, cancellationToken).ConfigureAwait(false);
-                            continue;
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="content">The request content, or null.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response message.</returns>
+        async Task<HttpResponseMessage> RequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
+            for (int i = 0; i < _retryCount; i++) {
+                try {
+                    return await (RawRequestAsync(method, path, content, cancellationToken).ConfigureAwait(false));
+                } catch (OAuth2AuthenticationException ex) {
+                    if (ex.StatusCode == HttpStatusCode.BadGateway && i < _retryCount - 1) {
+                        await Task.Delay(_retryDelay, cancellationToken).ConfigureAwait(false);
+                        continue;
+                    } else {
                         throw;
                     }
+                } catch (Exception ex) {
+                    throw;
                 }
-
-                throw new OAuth2AuthenticationException("Unreachable", new OAuth2AuthenticationError[] { new OAuth2AuthenticationError("Unreachable", "Could not reach account service") });
             }
 
-            /// <summary>
-            /// Requesta JSON object response.
-            /// </summary>
-            /// <param name="method"></param>
-            /// <param name="path"></param>
-            /// <param name="content"></param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken)
-            {
-                HttpResponseMessage response = await RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
+            throw new OAuth2AuthenticationException("Unreachable", new OAuth2AuthenticationError[] { new OAuth2AuthenticationError("Unreachable", "Could not reach account service") });
+        }
 
-                if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
-                    throw new ApiException("Invalid server response", new ApiError[0], response);
+        /// <summary>
+        /// Requesta JSON object response.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
 
-                return JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-            }
+            if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
+                throw new ApiException("Invalid server response", new ApiError[0], response);
 
-            /// <summary>
-            /// Raw request to ther OAuth2 Authentication service.
-            /// </summary>
-            /// <param name="method"></param>
-            /// <param name="path"></param>
-            /// <param name="content"></param>
-            /// <param name="cancelationToken"></param>
-            /// <returns></returns>
-            public async Task<HttpResponseMessage> RawRequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancelationToken)
-            {
-                // throw if cancelled
+            return JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        }
+
+        /// <summary>
+        /// Raw request to ther OAuth2 Authentication service.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        /// <param name="cancelationToken"></param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> RawRequestAsync(HttpMethod method, string path, HttpContent content, CancellationToken cancelationToken) {
+            // throw if cancelled
+            cancelationToken.ThrowIfCancellationRequested();
+
+            // Create a request message
+            HttpRequestMessage req = new HttpRequestMessage(method, path);
+
+            // Add the body
+            if (method != HttpMethod.Get && content != null)
+                req.Content = content;
+
+            // Send the request
+            HttpResponseMessage response = await _httpClient.SendAsync(req, cancelationToken).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode) {
+                return response;
+            } else {
                 cancelationToken.ThrowIfCancellationRequested();
 
-                // Create a request message
-                HttpRequestMessage req = new HttpRequestMessage(method, path);
+                // Parse the error response
+                string errMessage;
+                OAuth2AuthenticationError[] errArr;
 
-                // Add the body
-                if (method != HttpMethod.Get && content != null)
-                    req.Content = content;
+                try {
+                    JObject obj = JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-                // Send the request
-                HttpResponseMessage response = await _httpClient.SendAsync(req, cancelationToken).ConfigureAwait(false);
+                    // Convert the object into error objects
+                    JArray errJson = (JArray)obj["errors"];
+                    List<OAuth2AuthenticationError> errList = new List<OAuth2AuthenticationError>(errJson.Count);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return response;
-                }
-                else
-                {
-                    cancelationToken.ThrowIfCancellationRequested();
+                    foreach (JObject err in errJson) {
+                        // get additional data
+                        Dictionary<string, object> data = new Dictionary<string, object>();
 
-                    // Parse the error response
-                    string errMessage;
-                    OAuth2AuthenticationError[] errArr;
+                        foreach (KeyValuePair<string, JToken> kv in err) {
+                            if (kv.Key.Equals("error", StringComparison.CurrentCultureIgnoreCase) || kv.Key.Equals("message", StringComparison.CurrentCultureIgnoreCase) || kv.Key.Equals("field", StringComparison.CurrentCultureIgnoreCase))
+                                continue;
 
-                    try
-                    {
-                        JObject obj = JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                            // convert type if required
+                            object o = kv.Value;
 
-                        // Convert the object into error objects
-                        JArray errJson = (JArray)obj["errors"];
-                        List<OAuth2AuthenticationError> errList = new List<OAuth2AuthenticationError>(errJson.Count);
-
-                        foreach (JObject err in errJson)
-                        {
-                            // get additional data
-                            Dictionary<string, object> data = new Dictionary<string, object>();
-
-                            foreach (KeyValuePair<string, JToken> kv in err)
-                            {
-                                if (kv.Key.Equals("error", StringComparison.CurrentCultureIgnoreCase) || kv.Key.Equals("message", StringComparison.CurrentCultureIgnoreCase) || kv.Key.Equals("field", StringComparison.CurrentCultureIgnoreCase))
-                                    continue;
-
-                                // convert type if required
-                                object o = kv.Value;
-
-                                switch (kv.Value.Type)
-                                {
-                                    case JTokenType.Boolean:
-                                        o = (bool)kv.Value;
-                                        break;
-                                    case JTokenType.Bytes:
-                                        o = (byte[])kv.Value;
-                                        break;
-                                    case JTokenType.Date:
-                                        o = (DateTime)kv.Value;
-                                        break;
-                                    case JTokenType.Float:
-                                        o = (float)kv.Value;
-                                        break;
-                                    case JTokenType.Guid:
-                                        o = (Guid)kv.Value;
-                                        break;
-                                    case JTokenType.Integer:
-                                        o = Convert.ToInt32(kv.Value);
-                                        break;
-                                    case JTokenType.Null:
-                                        o = null;
-                                        break;
-                                    case JTokenType.String:
-                                        o = (string)kv.Value;
-                                        break;
-                                    case JTokenType.TimeSpan:
-                                        o = (TimeSpan)kv.Value;
-                                        break;
-                                    case JTokenType.Uri:
-                                        o = (Uri)kv.Value;
-                                        break;
-                                }
-
-                                // set data
-                                data[kv.Key] = kv.Value;
+                            switch (kv.Value.Type) {
+                                case JTokenType.Boolean:
+                                    o = (bool)kv.Value;
+                                    break;
+                                case JTokenType.Bytes:
+                                    o = (byte[])kv.Value;
+                                    break;
+                                case JTokenType.Date:
+                                    o = (DateTime)kv.Value;
+                                    break;
+                                case JTokenType.Float:
+                                    o = (float)kv.Value;
+                                    break;
+                                case JTokenType.Guid:
+                                    o = (Guid)kv.Value;
+                                    break;
+                                case JTokenType.Integer:
+                                    o = Convert.ToInt32(kv.Value);
+                                    break;
+                                case JTokenType.Null:
+                                    o = null;
+                                    break;
+                                case JTokenType.String:
+                                    o = (string)kv.Value;
+                                    break;
+                                case JTokenType.TimeSpan:
+                                    o = (TimeSpan)kv.Value;
+                                    break;
+                                case JTokenType.Uri:
+                                    o = (Uri)kv.Value;
+                                    break;
                             }
 
-                            // add error to list
-                            errList.Add(new OAuth2AuthenticationError((string)err["error"], (string)err["message"], (string)err["field"], data));
+                            // set data
+                            data[kv.Key] = kv.Value;
                         }
 
-                        // assign
-                        errArr = errList.ToArray();
-                        errMessage = (errArr.Length > 1 ? $"{errList.Count} errors occured" : errArr[0].Message) ?? "Unspecified error";
-                    }
-                    catch (Exception)
-                    {
-                        throw new OAuth2AuthenticationException(string.Format("Invalid server response - {0} {1}", (int)response.StatusCode, response.StatusCode), new OAuth2AuthenticationError[0], response);
+                        // add error to list
+                        errList.Add(new OAuth2AuthenticationError((string)err["error"], (string)err["message"], (string)err["field"], data));
                     }
 
-                    // throw api exception
-                    throw new OAuth2AuthenticationException(errMessage, errArr, response);
+                    // assign
+                    errArr = errList.ToArray();
+                    errMessage = (errArr.Length > 1 ? $"{errList.Count} errors occured" : errArr[0].Message) ?? "Unspecified error";
+                } catch (Exception) {
+                    throw new OAuth2AuthenticationException(string.Format("Invalid server response - {0} {1}", (int)response.StatusCode, response.StatusCode), new OAuth2AuthenticationError[0], response);
                 }
+
+                // throw api exception
+                throw new OAuth2AuthenticationException(errMessage, errArr, response);
             }
+        }
 
-            /// <summary>
-            /// Requests a JSON object with no response.
-            /// </summary>
-            /// <param name="method">The target method.</param>
-            /// <param name="path">The target path.</param>
-            /// <param name="body">The JSON body.</param>
-            /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns></returns>
-            Task RequestJsonAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken)
-            {
-                return RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken);
-            }
+        /// <summary>
+        /// Requests a JSON object with no response.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The JSON body.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task RequestJsonAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
+            return RequestAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken);
+        }
 
-            /// <summary>
-            /// Requests a JSON object with a JSON object response.
-            /// </summary>
-            /// <param name="method">The target method.</param>
-            /// <param name="path">The target path.</param>
-            /// <param name="body">The JSON body.</param>
-            /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>The JSON object response.</returns>
-            Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken)
-            {
-                return RequestJsonObjectAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken);
-            }
+        /// <summary>
+        /// Requests a JSON object with a JSON object response.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The JSON body.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The JSON object response.</returns>
+        Task<JObject> RequestJsonObjectAsync(HttpMethod method, string path, JObject body, CancellationToken cancellationToken) {
+            return RequestJsonObjectAsync(method, path, new StringContent(body.ToString(), Encoding.UTF8, "application/json"), cancellationToken);
+        }
 
-            /// <summary>
-            /// Requests a serialized object with a serialized object
-            /// </summary>
-            /// <typeparam name="TReq">The request object type.</typeparam>
-            /// <param name="method">The target method.</param>
-            /// <param name="path">The target path.</param>
-            /// <param name="body">The object to be serialized.</param>
-            /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns></returns>
-            public async Task<TReq> RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken)
-            {
-                HttpResponseMessage response = await RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body)), cancellationToken).ConfigureAwait(false);
+        /// <summary>
+        /// Requests a serialized object with a serialized object
+        /// </summary>
+        /// <typeparam name="TReq">The request object type.</typeparam>
+        /// <param name="method">The target method.</param>
+        /// <param name="path">The target path.</param>
+        /// <param name="body">The object to be serialized.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<TReq> RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, TReq body, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await RequestAsync(method, path, new StringContent(JsonConvert.SerializeObject(body)), cancellationToken).ConfigureAwait(false);
 
-                if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
-                    throw new ApiException("Invalid server response", new ApiError[0], response);
+            if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
+                throw new ApiException("Invalid server response", new ApiError[0], response);
 
-                return JsonConvert.DeserializeObject<TReq>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-            }
+            return JsonConvert.DeserializeObject<TReq>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        }
 
-            /// <summary>
-            /// Request a serialized object with a form data request.
-            /// </summary>
-            /// <typeparam name="TReq"></typeparam>
-            /// <param name="method"></param>
-            /// <param name="path"></param>
-            /// <param name="content"></param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<TReq> RequestJsonSerializedWithFormDataAsync<TReq>(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken)
-            {
-                HttpResponseMessage response = await RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
+        /// <summary>
+        /// Request a serialized object with a form data request.
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<TReq> RequestJsonSerializedWithFormDataAsync<TReq>(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
 
-                if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
-                    throw new ApiException("Invalid server response", new ApiError[0], response);
+            if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
+                throw new ApiException("Invalid server response", new ApiError[0], response);
 
-                return JsonConvert.DeserializeObject<TReq>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-            }
+            return JsonConvert.DeserializeObject<TReq>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        }
 
-            /// <summary>
-            /// Requests a serialized object.
-            /// </summary>
-            /// <typeparam name="TReq"></typeparam>1
-            /// <param name="method"></param>
-            /// <param name="path"></param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<TReq> RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, CancellationToken cancellationToken)
-            {
-                HttpResponseMessage response = await (RequestAsync(method, path, new StringContent("", Encoding.UTF8), cancellationToken).ConfigureAwait(false));
+        /// <summary>
+        /// Requests a serialized object.
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>1
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<TReq> RequestJsonSerializedAsync<TReq>(HttpMethod method, string path, CancellationToken cancellationToken) {
+            HttpResponseMessage response = await (RequestAsync(method, path, new StringContent("", Encoding.UTF8), cancellationToken).ConfigureAwait(false));
 
-                if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
-                    throw new ApiException("Invalid server response", new ApiError[0], response);
+            if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
+                throw new ApiException("Invalid server response", new ApiError[0], response);
 
-                return JsonConvert.DeserializeObject<TReq>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-            }
+            return JsonConvert.DeserializeObject<TReq>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        }
 
-            public OAuth2AuthenticationClient(string baseUrl)
-            {
-                _httpClient = new HttpClient();
-                _baseUrl = baseUrl;
-            }
+        public OAuth2AuthenticationClient(string baseUrl) {
+            _httpClient = new HttpClient();
+            _baseUrl = baseUrl;
         }
     }
 

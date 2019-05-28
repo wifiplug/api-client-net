@@ -71,7 +71,7 @@ namespace WifiPlug.Api.Authentication
         /// </summary>
         /// <param name="client">The client.</param>
         /// <returns></returns>
-        public override Task<bool> ReauthorizeAsync(IBaseApiRequestor client) {
+        protected internal override Task<bool> ReauthorizeAsync(IBaseApiRequestor client) {
             return Task.FromResult(false);
         }
         #endregion

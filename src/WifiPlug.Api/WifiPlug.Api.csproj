@@ -11,12 +11,12 @@
     <PackageProjectUrl>https://wifiplug.co.uk</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wifiplug/api-client-net</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>1.3.3.0</AssemblyVersion>
-    <FileVersion>1.3.3.0</FileVersion>
+    <AssemblyVersion>1.4.0.0</AssemblyVersion>
+    <FileVersion>1.4.0.0</FileVersion>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageIconUrl>https://s3.eu-west-2.amazonaws.com/wifiplug-pub/nuget-icons/wifiplug.png</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/wifiplug/api-client-net/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>1.3.3</Version>
+    <Version>1.4.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

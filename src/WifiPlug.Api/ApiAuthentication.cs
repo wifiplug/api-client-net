@@ -16,13 +16,13 @@ namespace WifiPlug.Api
     public abstract class ApiAuthentication
     {
         /// <summary>
-        /// Called when the authentication successfully reauthorises.
+        /// Called when the authentication successfully reauthorizes.
         /// </summary>
-        public event EventHandler<EventArgs> Reauthorised;
+        public event EventHandler<EventArgs> Reauthorized;
 
-        internal virtual void OnReauthorised(EventArgs e)
+        internal virtual void OnReauthorized(EventArgs e)
         {
-            Reauthorised?.Invoke(this, e);
+            Reauthorized?.Invoke(this, e);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace WifiPlug.Api
         /// </summary>
         /// <param name="client">The client.</param>
         /// <returns>If the request should be attempted again.</returns>
-        public abstract Task<bool> ReauthorizeAsync(IBaseApiRequestor client);
+        protected internal abstract Task<bool> ReauthorizeAsync(IBaseApiRequestor client);
 
         /// <summary>
         /// Serializes the authentication object for persistent storage.
