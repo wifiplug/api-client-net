@@ -202,7 +202,7 @@ namespace WifiPlug.Api.Authentication
     /// <summary>
     /// Defines an OAuth2Token response entity.
     /// </summary>
-    class OAuth2TokenResponseEntity
+    public class OAuth2TokenResponseEntity
     {
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }
@@ -223,7 +223,7 @@ namespace WifiPlug.Api.Authentication
     /// <summary>
     /// Defines a HTTP client to be used for OAuth2 requests
     /// </summary>
-    class OAuth2AuthenticationClient : HttpClient
+    public class OAuth2AuthenticationClient : HttpClient
     {
         private string _baseUrl;
         private HttpClient _httpClient;
