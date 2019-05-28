@@ -16,6 +16,16 @@ namespace WifiPlug.Api
     public abstract class ApiAuthentication
     {
         /// <summary>
+        /// Called when the authentication successfully reauthorises.
+        /// </summary>
+        public event EventHandler<EventArgs> Reauthorised;
+
+        internal virtual void OnReauthorised(EventArgs e)
+        {
+            Reauthorised?.Invoke(this, e);
+        }
+
+        /// <summary>
         /// Applies authentication to an outgoing request.
         /// </summary>
         /// <param name="request">The request.</param>
@@ -50,7 +60,6 @@ namespace WifiPlug.Api
                 Serialize(ms);
 
                 // convert
-                ms.Flush();
                 return Convert.ToBase64String(ms.ToArray());
             }
         }

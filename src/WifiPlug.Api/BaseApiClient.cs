@@ -129,6 +129,7 @@ namespace WifiPlug.Api
                         // if we're successful we don't count this as a retry, note that we store this
                         // this prevents an infinite loop and gives us retryCount + 1 if we had to reauthorise
                         if (success) {
+                            _authentication.OnReauthorised(new EventArgs());
                             i--;
                             hasReauthorised = true;
                         } else {
