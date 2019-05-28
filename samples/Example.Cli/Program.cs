@@ -20,7 +20,7 @@ namespace Example.Cli
         static async Task AsyncMain(string[] args) {
             ApiClient cc = new ApiClient(Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
 
-            cc.Authentication = new SessionAuthentication(Environment.GetEnvironmentVariable("SESSION_TOKEN"));
+            cc.Authentication = new BearerAuthentication("BEARER TOKEN");
 
             var device = await cc.Devices.GetDeviceAsync(new Guid("a765fb47-f2f5-40c9-bfb8-b63a8515adfd"));
 
