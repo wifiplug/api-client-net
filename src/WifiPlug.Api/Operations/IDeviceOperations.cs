@@ -292,6 +292,16 @@ namespace WifiPlug.Api.Operations
         Task<TimerEntity> AddDeviceTimerAsync(Guid deviceUuid, DeviceTimerAddEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Edit an existing timer.
+        /// </summary>
+        /// <param name="deviceUuid">The device UUID.</param>
+        /// <param name="timerUuid">The timer UUID.</param>
+        /// <param name="entity">The changes entity.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<TimerEntity> EditDeviceTimerAsync(Guid deviceUuid, Guid timerUuid, DeviceTimerEditEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Deletes a timer from the device.
         /// </summary>
         /// <param name="deviceUuid">The device UUID.</param>

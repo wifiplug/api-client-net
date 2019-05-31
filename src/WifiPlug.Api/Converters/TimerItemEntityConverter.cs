@@ -25,12 +25,16 @@ namespace WifiPlug.Api.Converters
             if (type.Equals("device", StringComparison.CurrentCultureIgnoreCase)) {
                 return new TimerItemEntity() {
                     Type = type,
-                    Entity = ((JObject)obj["entity"]).ToObject<DeviceEntity>()
+                    UUID = Guid.Parse(obj["uuid"].ToString()),
+                    DeviceUUID = Guid.Parse(obj["device_uuid"].ToString()),
+                    ServiceUUID = Guid.Parse(obj["service_uuid"].ToString()),
+                    CharacteristicUUID = Guid.Parse(obj["characteristic_uuid"].ToString())
                 };
             } else if (type.Equals("group", StringComparison.CurrentCultureIgnoreCase)) {
                 return new TimerItemEntity() {
                     Type = type,
-                    Entity = ((JObject)obj["entity"]).ToObject<GroupEntity>()
+                    UUID = Guid.Parse(obj["uuid"].ToString()),
+                    GroupUUID = Guid.Parse(obj["group_uuid"].ToString())
                 };
             } else {
                 return null;
@@ -40,7 +44,17 @@ namespace WifiPlug.Api.Converters
         private JObject ToObject(TimerItemEntity entity) {
             JObject obj = new JObject();
             obj["type"] = entity.Type;
-            obj["entity"] = JObject.FromObject(entity.Entity);
+
+            if (entity.Type == "device")
+            {
+                obj["device_uuid"] = entity.DeviceUUID;
+                obj["service_uuid"] = entity.ServiceUUID;
+                obj["characteristic_uuid"] = entity.CharacteristicUUID;
+            }
+
+            if (entity.Type == "group")
+                obj["group_uuid"] = entity.GroupUUID;
+
             return obj;
         }
 

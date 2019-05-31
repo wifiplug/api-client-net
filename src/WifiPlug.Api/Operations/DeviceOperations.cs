@@ -442,6 +442,19 @@ namespace WifiPlug.Api.Operations
         }
 
         /// <summary>
+        /// Edits an existing timer.
+        /// </summary>
+        /// <param name="deviceUuid">The device UUID.</param>
+        /// <param name="timerUuid">The timer UUID.</param>
+        /// <param name="entity">The changes entity,</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<TimerEntity> EditDeviceTimerAsync(Guid deviceUuid, Guid timerUuid, DeviceTimerEditEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return _client.RequestJsonSerializedAsync<DeviceTimerEditEntity, TimerEntity>(HttpMethod.Post, $"device/{deviceUuid}/timer/{timerUuid}", entity, cancellationToken);
+        }
+
+        /// <summary>
         /// Adds a timer to the device.
         /// </summary>
         /// <param name="deviceUuid">The device UUID.</param>

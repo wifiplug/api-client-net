@@ -262,6 +262,19 @@ namespace WifiPlug.Api.Operations
         }
 
         /// <summary>
+        /// Edits a timer on the group.
+        /// </summary>
+        /// <param name="groupUuid">The group UUID.</param>
+        /// <param name="timerUuid">The timer UUID.</param>
+        /// <param name="entity">The changes entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public Task<TimerEntity> EditGroupTimerAsync(Guid groupUuid, Guid timerUuid, GroupTimerEditEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return _client.RequestJsonSerializedAsync<GroupTimerEditEntity, TimerEntity>(HttpMethod.Post, $"group/{groupUuid}/timer/{timerUuid}", entity, cancellationToken);
+        }
+
+        /// <summary>
         /// Deletes a timer from the group.
         /// </summary>
         /// <param name="groupUuid">The group UUID.</param>

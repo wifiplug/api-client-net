@@ -21,31 +21,55 @@ namespace WifiPlug.Api.Entities
         public string Type { get; set; }
 
         /// <summary>
-        /// Gets or sets the raw item entity.
+        /// Gets or sets the item UUID.
         /// </summary>
-        [JsonProperty(PropertyName = "entity")]
-        public object Entity { get; set; }
+        [JsonProperty(PropertyName = "uuid")]
+        public Guid UUID { get; set; }
 
         /// <summary>
-        /// Gets the target entity as a device.
+        /// Gets or sets the device UUID if the item is a device.
+        /// </summary>
+        [JsonProperty(PropertyName = "device_uuid")]
+        public Guid? DeviceUUID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the service UUID if the item is a device.
+        /// </summary>
+        [JsonProperty(PropertyName = "service_uuid")]
+        public Guid? ServiceUUID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the characteristic UUID if the item is a device.
+        /// </summary>
+        [JsonProperty(PropertyName = "characteristic_uuid")]
+        public Guid? CharacteristicUUID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the group UUID if the item is a group.
+        /// </summary>
+        [JsonProperty(PropertyName = "group_uuid")]
+        public Guid? GroupUUID { get; set; }
+
+        /// <summary>
+        /// Check if the item is a device.
         /// </summary>
         /// <returns></returns>
-        public DeviceEntity AsDevice() {
-            if (!Type.Equals("device", StringComparison.CurrentCultureIgnoreCase))
-                throw new InvalidOperationException("The timer item is not targetting a device");
-
-            return (DeviceEntity)Entity;
+        public bool IsDevice()
+        {
+            if (Type == "device")
+                return true;
+            return false;
         }
 
         /// <summary>
-        /// Gets the target entity as a group.
+        /// Check if the item is a group.
         /// </summary>
         /// <returns></returns>
-        public GroupEntity AsGroup() {
-            if (!Type.Equals("group", StringComparison.CurrentCultureIgnoreCase))
-                throw new InvalidOperationException("The timer item is not targetting a group");
-
-            return (GroupEntity)Entity;
+        public bool IsGroup()
+        {
+            if (Type == "group")
+                return true;
+            return false;
         }
     }
 }

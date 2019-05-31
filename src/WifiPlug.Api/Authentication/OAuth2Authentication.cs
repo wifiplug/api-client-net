@@ -126,6 +126,10 @@ namespace WifiPlug.Api.Authentication
         /// <param name="client">The client.</param>
         /// <returns></returns>
         protected internal override async Task<bool> ReauthorizeAsync(IBaseApiRequestor client) {
+            // Check an access token is provided before attempting.
+            if (string.IsNullOrEmpty(_refreshToken))
+                return false;
+
             // Create the form data
             var exchangeContent = new FormUrlEncodedContent(new[]
             {
@@ -161,6 +165,17 @@ namespace WifiPlug.Api.Authentication
         /// <param name="clientSecret"></param>
         public OAuth2Authentication(string clientID, string clientSecret)
             : this(clientID, clientSecret, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new OAuth2 authentication object without a refresh token.
+        /// </summary>
+        /// <param name="clientID"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="accessToken"></param>
+        public OAuth2Authentication(string clientID, string clientSecret, string accessToken)
+            : this(clientID, clientSecret, accessToken, "", null)
         {
         }
 

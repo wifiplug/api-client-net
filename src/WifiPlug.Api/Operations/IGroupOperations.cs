@@ -173,6 +173,16 @@ namespace WifiPlug.Api.Operations
         Task<TimerEntity> AddGroupTimerAsync(Guid groupUuid, GroupTimerAddEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Edits a timer on the group.
+        /// </summary>
+        /// <param name="groupUuid">The group UUID.</param>
+        /// <param name="timerUuid">The timer UUID.</param>
+        /// <param name="entity">The changes entity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TimerEntity> EditGroupTimerAsync(Guid groupUuid, Guid timerUuid, GroupTimerEditEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Deletes a timer from the group.
         /// </summary>
         /// <param name="groupUuid">The group UUID.</param>
