@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\WifiPlug.Api\WifiPlug.Api.csproj" />
+    <ProjectReference Include="..\..\src\WifiPlug.Api\WifiPlug.Api.csproj" />
   </ItemGroup>
 
 </Project>
