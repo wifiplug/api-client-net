@@ -393,6 +393,25 @@ namespace WifiPlug.Api
 
             return JsonConvert.DeserializeObject<TRes>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
+
+        /// <summary>
+        /// Request a serialized object response with Form data input.
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<TReq> RequestJsonSerializedWithFormDataAsync<TReq>(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken)
+        {
+            HttpResponseMessage response = await ((IBaseApiRequestor)this).RequestAsync(method, path, content, cancellationToken).ConfigureAwait(false);
+
+            if (!response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.CurrentCultureIgnoreCase))
+                throw new ApiException("Invalid server response", new ApiError[0], response);
+
+            return JsonConvert.DeserializeObject<TReq>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        }
         #endregion
 
         #region API Methods

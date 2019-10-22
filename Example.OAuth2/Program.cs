@@ -34,7 +34,7 @@ namespace Example.OAuth2
                 var devices = await client.Devices.ListDevicesAsync();
 
                 await Task.Delay(Timeout.Infinite);
-            } catch (OAuth2AuthenticationException ex)
+            } catch (ApiException ex)
             {
                 // A failure to authenticate will be thrown with this exception
                 throw;

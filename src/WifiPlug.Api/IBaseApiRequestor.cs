@@ -131,5 +131,16 @@ namespace WifiPlug.Api
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response object.</returns>
         Task<TRes> RequestJsonSerializedAsync<TRes>(HttpMethod method, string path, CancellationToken cancellationToken = default(CancellationToken));
+        
+        /// <summary>
+        /// Request a serialized object with a form data request.
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<TReq> RequestJsonSerializedWithFormDataAsync<TReq>(HttpMethod method, string path, HttpContent content, CancellationToken cancellationToken);
     }
 }
