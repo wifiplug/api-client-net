@@ -482,10 +482,10 @@ namespace WifiPlug.Api.Operations
         /// <param name="deviceUuid">The device UUID.</param>
         /// <param name="limit">The limit, maximum of 50.</param>
         /// <param name="cursor">The previously returned cursor.</param>
-        /// <param name="eventNameFilter">An optional event name to filter.</param>
+        /// <param name="eventNameFilters">Optional event names to filter.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The event results.</returns>
-        public async Task<ScanResult<EventEntity>> ScanDeviceEventsAsync(Guid deviceUuid, int limit = 50, Cursor cursor = default(Cursor), string eventNameFilter = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ScanResult<EventEntity>> ScanDeviceEventsAsync(Guid deviceUuid, int limit = 50, Cursor cursor = default(Cursor), IEnumerable<string> eventNameFilters = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (limit < 0 || limit > 50)
                 throw new ArgumentOutOfRangeException(nameof(limit), "The limit cannot be larger than 50");
@@ -496,8 +496,8 @@ namespace WifiPlug.Api.Operations
             if (!cursor.IsEnd)
                 uri += string.Format("&cursor={0}", WebUtility.UrlEncode(cursor.Token));
 
-            if (!string.IsNullOrEmpty(eventNameFilter))
-                uri += string.Format("&filter={0}", WebUtility.UrlEncode(eventNameFilter));
+            if (eventNameFilters != null && eventNameFilters.Any())
+                uri += string.Format("&filter={0}", WebUtility.UrlEncode(string.Join(",", eventNameFilters));
 
             // load results for current cursor
             EventResultsEntity entity = await _client.RequestJsonSerializedAsync<EventResultsEntity>(HttpMethod.Get, uri, cancellationToken).ConfigureAwait(false);
@@ -506,23 +506,47 @@ namespace WifiPlug.Api.Operations
         }
 
         /// <summary>
-        /// Gets all device events. This may return alot of results, see <see cref="ScanDeviceEventsAsync"/> instead.
+        /// Scans the device events list.
         /// </summary>
         /// <param name="deviceUuid">The device UUID.</param>
-        /// <param name="eventNameFilter">An optional event name to filter.</param>
+        /// <param name="limit">The limit, maximum of 50.</param>
+        /// <param name="cursor">The previously returned cursor.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The event results.</returns>
+        public async Task<ScanResult<EventEntity>> ScanDeviceEventsAsync(Guid deviceUuid, int limit = 50, Cursor cursor = default(Cursor), CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ScanDeviceEventsAsync(deviceUuid, limit, cursor, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Gets all device events. This may return alot of results, see <see cref="ScanDeviceEventsAsync(Guid, int, Cursor, IEnumerable{string}, CancellationToken)"/> instead.
+        /// </summary>
+        /// <param name="deviceUuid">The device UUID.</param>
+        /// <param name="eventNameFilters">Optional event names to filter.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>All events.</returns>
-        public async Task<EventEntity[]> ListDeviceEventsAsync(Guid deviceUuid, string eventNameFilter = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<EventEntity[]> ListDeviceEventsAsync(Guid deviceUuid, IEnumerable<string> eventNameFilters, CancellationToken cancellationToken = default(CancellationToken))
         {
             ScanResult<EventEntity> scan = null;
             List<EventEntity> events = new List<EventEntity>();
 
             while (scan == null || !scan.Cursor.IsEnd) {
-                scan = await ScanDeviceEventsAsync(deviceUuid, 50, scan == null ? default(Cursor) : scan.Cursor, eventNameFilter, cancellationToken).ConfigureAwait(false);
+                scan = await ScanDeviceEventsAsync(deviceUuid, 50, scan == null ? default(Cursor) : scan.Cursor, eventNameFilters, cancellationToken).ConfigureAwait(false);
                 events.AddRange(scan.Entities);
             }
 
             return events.ToArray();
+        }
+
+        /// <summary>
+        /// Gets all device events. This may return alot of results, see <see cref="ScanDeviceEventsAsync(Guid, int, Cursor, IEnumerable{string}, CancellationToken)"/> instead.
+        /// </summary>
+        /// <param name="deviceUuid">The device UUID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>All events.</returns>
+        public async Task<EventEntity[]> ListDeviceEventsAsync(Guid deviceUuid, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ListDeviceEventsAsync(deviceUuid, null, cancellationToken);
         }
 
         /// <summary>
