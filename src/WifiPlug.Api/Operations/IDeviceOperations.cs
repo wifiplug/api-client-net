@@ -319,7 +319,7 @@ namespace WifiPlug.Api.Operations
         /// <param name="eventNameFilters">Optional event names to filter.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The event results.</returns>
-        Task<ScanResult<EventEntity>> ScanDeviceEventsAsync(Guid deviceUuid, int limit = 50, Cursor cursor = default(Cursor), IEnumerable<string> eventNameFilters, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ScanResult<EventEntity>> ScanDeviceEventsAsync(Guid deviceUuid, int limit = 50, Cursor cursor = default(Cursor), IEnumerable<string> eventNameFilters = null, CancellationToken cancellationToken = default(CancellationToken));
         
         /// <summary>
         /// Scans the device events list.

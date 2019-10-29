@@ -497,7 +497,7 @@ namespace WifiPlug.Api.Operations
                 uri += string.Format("&cursor={0}", WebUtility.UrlEncode(cursor.Token));
 
             if (eventNameFilters != null && eventNameFilters.Any())
-                uri += string.Format("&filter={0}", WebUtility.UrlEncode(string.Join(",", eventNameFilters));
+                uri += string.Format("&filter={0}", WebUtility.UrlEncode(string.Join(",", eventNameFilters)));
 
             // load results for current cursor
             EventResultsEntity entity = await _client.RequestJsonSerializedAsync<EventResultsEntity>(HttpMethod.Get, uri, cancellationToken).ConfigureAwait(false);
