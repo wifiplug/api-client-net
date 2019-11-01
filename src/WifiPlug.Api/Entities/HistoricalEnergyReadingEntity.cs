@@ -16,7 +16,7 @@ namespace WifiPlug.Api.Entities
         /// <summary>
         /// Gets or sets the reading timestamp.
         /// </summary>
-        [JsonProperty(PropertyName = "time")]
+        [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }
     }
 }
