@@ -14,6 +14,12 @@ namespace WifiPlug.Api.New.Entities
         public Dictionary<string, string> Data { get; set; }
 
         /// <summary>
+        /// Gets or sets whether the trigger should be enabled.
+        /// </summary>
+        [JsonProperty("enabled", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool? Enabled { get; set; }
+
+        /// <summary>
         /// Gets or sets the trigger's items, if any.
         /// </summary>
         [JsonProperty("items")]

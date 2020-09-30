@@ -20,6 +20,12 @@ namespace WifiPlug.Api.New.Entities
         public TriggerDataEntity[] Data { get; set; }
 
         /// <summary>
+        /// Gets or sets whether the trigger is enabled.
+        /// </summary>
+        [JsonProperty("enabled")]
+        public bool Enabled { get; set; }
+
+        /// <summary>
         /// Gets or sets the trigger's items, if any.
         /// </summary>
         [JsonProperty("items")]

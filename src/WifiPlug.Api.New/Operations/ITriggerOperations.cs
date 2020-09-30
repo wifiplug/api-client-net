@@ -31,6 +31,36 @@ namespace WifiPlug.Api.New.Operations
         Task DeleteDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Disable a device trigger.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID of the device.</param>
+        /// <param name="triggerUuid">The UUID of the trigger.</param>
+        Task<TriggerEntity> DisableDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Disable a device trigger.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID of the device.</param>
+        /// <param name="triggerUuid">The UUID of the trigger.</param>
+        Task<TTriggerEntity> DisableDeviceTriggerAsync<TTriggerEntity>(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default)
+            where TTriggerEntity : class;
+
+        /// <summary>
+        /// Enable a device trigger.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID of the device.</param>
+        /// <param name="triggerUuid">The UUID of the trigger.</param>
+        Task<TriggerEntity> EnableDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Enable a device trigger.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID of the device.</param>
+        /// <param name="triggerUuid">The UUID of the trigger.</param>
+        Task<TTriggerEntity> EnableDeviceTriggerAsync<TTriggerEntity>(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default)
+            where TTriggerEntity : class;
+
+        /// <summary>
         /// Get a device trigger.
         /// </summary>
         /// <param name="deviceUuid">The UUID of the device.</param>
@@ -69,6 +99,23 @@ namespace WifiPlug.Api.New.Operations
         /// </summary>
         /// <param name="deviceUuid">The UUID of the device.</param>
         Task<ResultResponseEntity<TTriggerEntity>> ListDeviceTriggersAsync<TTriggerEntity>(Guid deviceUuid, string cursor = null, int limit = 50, CancellationToken cancellationToken = default)
+            where TTriggerEntity : class;
+
+        /// <summary>
+        /// Toggle the enabled state of a device trigger.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID of the device.</param>
+        /// <param name="triggerUuid">The UUID of the trigger.</param>
+        /// <param name="enabled">Whether to enable or disable the trigger. If not provided the trigger will be swapped to the opposite state.</param>
+        Task<TriggerEntity> ToggleDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, bool? enabled = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Toggle the enabled state of a device trigger.
+        /// </summary>
+        /// <param name="deviceUuid">The UUID of the device.</param>
+        /// <param name="triggerUuid">The UUID of the trigger.</param>
+        /// <param name="enabled">Whether to enable or disable the trigger. If not provided the trigger will be swapped to the opposite state.</param>
+        Task<TTriggerEntity> ToggleDeviceTriggerAsync<TTriggerEntity>(Guid deviceUuid, Guid triggerUuid, bool? enabled = null, CancellationToken cancellationToken = default)
             where TTriggerEntity : class;
         #endregion
     }
