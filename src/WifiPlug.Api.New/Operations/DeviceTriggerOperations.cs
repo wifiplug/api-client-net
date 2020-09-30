@@ -7,7 +7,7 @@ using WifiPlug.Api.New.Operations.Base;
 
 namespace WifiPlug.Api.New.Operations
 {
-    public class TriggerOperations : BaseOperations, ITriggerOperations
+    public class DeviceTriggerOperations : BaseOperations, IDeviceTriggerOperations
     {
         #region Public Methods
         /// <summary>
@@ -16,7 +16,7 @@ namespace WifiPlug.Api.New.Operations
         /// <param name="deviceUuid">The UUID of the device.</param>
         /// <param name="trigger">The new trigger to add.</param>
         public virtual Task<TriggerEntity> AddDeviceTriggerAsync(Guid deviceUuid, TriggerAddEntity trigger, CancellationToken cancellationToken = default)
-            => ((ITriggerOperations)this).AddDeviceTriggerAsync<TriggerEntity>(deviceUuid, trigger, cancellationToken);
+            => ((IDeviceTriggerOperations)this).AddDeviceTriggerAsync<TriggerEntity>(deviceUuid, trigger, cancellationToken);
 
         /// <summary>
         /// Add a device trigger.
@@ -41,7 +41,7 @@ namespace WifiPlug.Api.New.Operations
         /// <param name="deviceUuid">The UUID of the device.</param>
         /// <param name="triggerUuid">The UUID of the trigger.</param>
         public virtual Task<TriggerEntity> DisableDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default)
-            => ((ITriggerOperations)this).DisableDeviceTriggerAsync<TriggerEntity>(deviceUuid, triggerUuid, cancellationToken);
+            => ((IDeviceTriggerOperations)this).DisableDeviceTriggerAsync<TriggerEntity>(deviceUuid, triggerUuid, cancellationToken);
 
         /// <summary>
         /// Disable a device trigger.
@@ -58,7 +58,7 @@ namespace WifiPlug.Api.New.Operations
         /// <param name="deviceUuid">The UUID of the device.</param>
         /// <param name="triggerUuid">The UUID of the trigger.</param>
         public virtual Task<TriggerEntity> EnableDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default)
-            => ((ITriggerOperations)this).EnableDeviceTriggerAsync<TriggerEntity>(deviceUuid, triggerUuid, cancellationToken);
+            => ((IDeviceTriggerOperations)this).EnableDeviceTriggerAsync<TriggerEntity>(deviceUuid, triggerUuid, cancellationToken);
 
         /// <summary>
         /// Enable a device trigger.
@@ -75,7 +75,7 @@ namespace WifiPlug.Api.New.Operations
         /// <param name="deviceUuid">The UUID of the device.</param>
         /// <param name="triggerUuid">The UUID of the trigger.</param>
         public virtual Task<TriggerEntity> GetDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, CancellationToken cancellationToken = default)
-            => ((ITriggerOperations)this).GetDeviceTriggerAsync(deviceUuid, triggerUuid, cancellationToken);
+            => ((IDeviceTriggerOperations)this).GetDeviceTriggerAsync(deviceUuid, triggerUuid, cancellationToken);
 
         /// <summary>
         /// Get a timer.
@@ -91,7 +91,7 @@ namespace WifiPlug.Api.New.Operations
         /// </summary>
         /// <param name="deviceUuid">The UUID of the device.</param>
         public virtual Task<TriggerEntity[]> ListAllDeviceTriggersAsync(Guid deviceUuid, CancellationToken cancellationToken = default)
-            => ((ITriggerOperations)this).ListAllDeviceTriggersAsync<TriggerEntity>(deviceUuid, cancellationToken);
+            => ((IDeviceTriggerOperations)this).ListAllDeviceTriggersAsync<TriggerEntity>(deviceUuid, cancellationToken);
 
         /// <summary>
         /// Get all device trigger.
@@ -106,7 +106,7 @@ namespace WifiPlug.Api.New.Operations
         /// </summary>
         /// <param name="deviceUuid">The UUID of the device.</param>
         public virtual Task<ResultResponseEntity<TriggerEntity>> ListDeviceTriggersAsync(Guid deviceUuid, string cursor = null, int limit = 50, CancellationToken cancellationToken = default)
-            => ((ITriggerOperations)this).ListDeviceTriggersAsync<TriggerEntity>(deviceUuid, cursor, limit, cancellationToken);
+            => ((IDeviceTriggerOperations)this).ListDeviceTriggersAsync<TriggerEntity>(deviceUuid, cursor, limit, cancellationToken);
 
         /// <summary>
         /// Get a page of device trigger.
@@ -123,7 +123,7 @@ namespace WifiPlug.Api.New.Operations
         /// <param name="triggerUuid">The UUID of the trigger.</param>
         /// <param name="enabled">Whether to enable or disable the trigger. If not provided the trigger will be swapped to the opposite state.</param>
         public virtual Task<TriggerEntity> ToggleDeviceTriggerAsync(Guid deviceUuid, Guid triggerUuid, bool? enabled = null, CancellationToken cancellationToken = default)
-            => ((ITriggerOperations)this).ToggleDeviceTriggerAsync<TriggerEntity>(deviceUuid, triggerUuid, enabled);
+            => ((IDeviceTriggerOperations)this).ToggleDeviceTriggerAsync<TriggerEntity>(deviceUuid, triggerUuid, enabled);
 
         /// <summary>
         /// Toggle the enabled state of a device trigger.
@@ -148,7 +148,7 @@ namespace WifiPlug.Api.New.Operations
         /// Creates a new set of API operations for timers.
         /// </summary>
         /// <param name="apiRequestor">The API requestor to use for communicating with the API.</param>
-        public TriggerOperations(IApiRequestor apiRequestor)
+        public DeviceTriggerOperations(IApiRequestor apiRequestor)
             : base(apiRequestor)
         {
         }

@@ -7,7 +7,7 @@ namespace WifiPlug.Api.New
     {
         #region Fields
         private readonly IDeviceOperations _devices;
-        private readonly ITriggerOperations _triggers;
+        private readonly IDeviceTriggerOperations _deviceTriggers;
         #endregion
 
         #region Properties
@@ -17,17 +17,17 @@ namespace WifiPlug.Api.New
         public virtual IDeviceOperations Devices => _devices;
 
         /// <summary>
-        /// Gets the API operations for triggers.
+        /// Gets the API operations for device triggers.
         /// </summary>
-        public virtual ITriggerOperations Triggers => _triggers;
+        public virtual IDeviceTriggerOperations DeviceTriggers => _deviceTriggers;
         #endregion
 
         #region Protected Methods
         protected virtual IDeviceOperations ConstructDeviceOperations()
             => new DeviceOperations(this);
 
-        protected virtual ITriggerOperations ConstructTriggerOperations()
-            => new TriggerOperations(this);
+        protected virtual IDeviceTriggerOperations ConstructDeviceTriggerOperations()
+            => new DeviceTriggerOperations(this);
         #endregion
 
         #region Constructors
@@ -51,7 +51,7 @@ namespace WifiPlug.Api.New
             : base(baseApiUri, apiKey, apiSecret)
         {
             _devices = ConstructDeviceOperations();
-            _triggers = ConstructTriggerOperations();
+            _deviceTriggers = ConstructDeviceTriggerOperations();
         }
         #endregion
     }

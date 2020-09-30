@@ -11,9 +11,9 @@ namespace WifiPlug.Api.New
         IDeviceOperations Devices { get; }
 
         /// <summary>
-        /// Gets the API operations for triggers.
+        /// Gets the API operations for device triggers.
         /// </summary>
-        ITriggerOperations Triggers { get; }
+        IDeviceTriggerOperations DeviceTriggers { get; }
         #endregion
     }
 }

@@ -5,7 +5,7 @@ using WifiPlug.Api.New.Entities;
 
 namespace WifiPlug.Api.New.Operations
 {
-    public interface ITriggerOperations
+    public interface IDeviceTriggerOperations
     {
         #region Public Methods
         /// <summary>
