@@ -1,39 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>WIFIPLUG</Authors>
-    <Company>WIFIPLUG</Company>
-    <Product>WifiPlug.Api</Product>
-    <Copyright>WIFIPLUG 2021</Copyright>
-    <Description>The .NET client for the REST API</Description>
-    <PackageProjectUrl>https://wifiplug.co.uk</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/wifiplug/api-client-net</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>1.4.5.1</AssemblyVersion>
-    <FileVersion>1.4.5.1</FileVersion>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIconUrl>https://s3.eu-west-2.amazonaws.com/wifiplug-pub/nuget-icons/wifiplug.png</PackageIconUrl>
-    <PackageLicenseUrl>https://github.com/wifiplug/api-client-net/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>1.4.5.1</Version>
-    <PackageReleaseNotes>Fixed a mismatched JSON tag.</PackageReleaseNotes>
-  </PropertyGroup>
+	<PropertyGroup>
+		<GitInfoReportImportance Condition="'$(Configuration)' == 'Release'">high</GitInfoReportImportance>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard1.4\WifiPlug.Api.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+        <TargetFramework>netstandard1.4</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>WIFIPLUG</Authors>
+        <Company>WIFIPLUG</Company>
+        <Product>WifiPlug.Api</Product>
+        <Copyright>WIFIPLUG 2021</Copyright>
+        <Description>The .NET client for the REST API</Description>
+        <PackageProjectUrl>https://wifiplug.co.uk</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/wifiplug/api-client-net</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageIconUrl>https://s3.eu-west-2.amazonaws.com/wifiplug-pub/nuget-icons/wifiplug.png</PackageIconUrl>
+        <PackageLicenseUrl>https://github.com/wifiplug/api-client-net/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageReleaseNotes />
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard1.4\WifiPlug.Api.xml</DocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DocumentationFile>bin\Debug\netstandard1.4\WifiPlug.Api.xml</DocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
-    <PackageReference Include="WifiPlug.DeviceFramework" Version="0.8.5" />
-    <PackageReference Include="WifiPlug.EventFramework" Version="0.3.0" />
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DocumentationFile>bin\Release\netstandard1.4\WifiPlug.Api.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
+        <PackageReference Include="WifiPlug.DeviceFramework" Version="0.8.5" />
+        <PackageReference Include="WifiPlug.EventFramework" Version="0.3.0" />
+		<PackageReference Include="GitInfo" Version="2.2.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+    </ItemGroup>
+
+	<Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec;_GetProjectVersion" DependsOnTargets="GitVersion">
+		<PropertyGroup>
+			<Version Condition="$(GitBranch) == 'master'">$(GitBaseTag)</Version>
+			<Version Condition="$(GitBranch) == 'develop'">$(GitBaseTag)-alpha-$(GitCommit)</Version>
+			<Version Condition="$(GitBranch) != 'develop' and $(GitBranch) != 'master'">$(GitBaseTag)-alpha-$(GitBranch)-$(GitCommit)</Version>
+
+			<PackageVersion Condition="$(GitBranch) == 'master'">$(GitBaseTag)</PackageVersion>
+			<PackageVersion Condition="$(GitBranch) == 'develop'">$(GitBaseTag)-alpha-$(GitCommit)</PackageVersion>
+			<PackageVersion Condition="$(GitBranch) != 'develop' and $(GitBranch) != 'master'">$(GitBaseTag)-alpha-$(GitBranch)-$(GitCommit)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
 </Project>
