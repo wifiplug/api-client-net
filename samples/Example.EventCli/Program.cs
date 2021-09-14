@@ -11,9 +11,7 @@ namespace Example.EventCli
 {
     class Program
     {
-        static void Main(string[] args) => MainAsync(args).Wait();
-
-        static async Task MainAsync(string[] args) {
+        static async Task Main(string[] args) {
             EventClient eventClient = new EventClient("wss://event.wifiplug.co.uk/v1.0", Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
             eventClient.Scope = new SessionScope(Environment.GetEnvironmentVariable("SCOPE_SESSION"));
 

@@ -15,9 +15,7 @@ namespace Example.Cli
 {
     class Program
     {
-        static void Main(string[] args) => AsyncMain(args).Wait();
-
-        static async Task AsyncMain(string[] args) {
+        static async Task Main(string[] args) {
             ApiClient cc = new ApiClient(Environment.GetEnvironmentVariable("API_KEY"), Environment.GetEnvironmentVariable("API_SECRET"));
 
             cc.Authentication = new BearerAuthentication("BEARER TOKEN");

@@ -9,9 +9,7 @@ namespace Example.OAuth2
 {
     class Program
     {
-        static void Main(string[] args) => MainAsync(args).Wait();
-
-        static async Task MainAsync(string[] args)
+        static async Task Main(string[] args)
         {
             // API Key and Secret
             string apiKey = Environment.GetEnvironmentVariable("API_KEY");
