@@ -16,6 +16,7 @@ jobs:
       - run:
           name: Build API client project
           command: dotnet build WifiPlug.Api.csproj -c Release
+          working_directory: src/WifiPlug.Api
       - run:
           name: Push API client to MyGet
           command: dotnet nuget push *.nupkg --api-key $MYGET_API_KEY --source $MYGET_SOURCE
