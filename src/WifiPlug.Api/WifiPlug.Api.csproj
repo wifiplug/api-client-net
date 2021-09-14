@@ -6,7 +6,7 @@
     <Authors>WIFIPLUG</Authors>
     <Company>WIFIPLUG</Company>
     <Product>WifiPlug.Api</Product>
-    <Copyright>WIFIPLUG 2019</Copyright>
+    <Copyright>WIFIPLUG 2021</Copyright>
     <Description>The .NET client for the REST API</Description>
     <PackageProjectUrl>https://wifiplug.co.uk</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wifiplug/api-client-net</RepositoryUrl>
